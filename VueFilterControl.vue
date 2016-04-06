@@ -244,8 +244,15 @@
             },
 
             getSelectedOptionFromColumnAndKey(column, optionKey) {
-                var options = column.options;
-                return options ? options[optionKey] : null
+                var options = column.options
+                if (options) {
+                    for (var i=0;i<options.length;i++){
+                        if (options[i].key == optionKey){
+                            return options[i]
+                        }
+                    }
+                }
+                return null
             },
             
             operatorSelected() {

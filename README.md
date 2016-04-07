@@ -37,12 +37,13 @@ After installing the plugin you can use it like this
 var vm = new Vue({
     el: 'body',
     data: {
-        columns: {
-            'first_name': { 
+        columns: [ 
+            {
+                name: 'first_name', 
                 displayName: 'First Name',
-                dataType: 'string'
-            },
-            'languages_spoken': {
+                dataType: 'string'    
+            },{
+                name: 'languages_spoken',
                 displayName: 'Languages Spoken Fluently',
                 dataType: 'multi-select',
                 options: [
@@ -53,8 +54,8 @@ var vm = new Vue({
                     // ...more languages
                 ],
                 maxItems: 10            
-            }
-        },
+            }    
+        ],
         myFilters: [
             { column: 'first_name', operator: '=', value: 'Frank' },
             { column: 'languages_spoken', operator: 'in', value: 'en,fr' }
@@ -72,19 +73,20 @@ var vm = new Vue({
 
 ## Props
 
-- `columns` is an object (essentially an associative array) defining the columns that can be used to filter data. See columns format below.
+- `columns` is an array of columns that can be used to filter data. See columns format below.
 - `active-filters` is an array that defines the current active filter. Any changes to the filter within the filter control will sync to the bound data. See data-filters format below.
 
 ### columns object format
 
 Example:
 ```javascript
- columns: { 
-    'first_name': {
+ columns: [ 
+    {
+        name: 'first_name', 
         displayName: 'First Name',
         dataType: 'string'    
-    },
-    'languages_spoken': {
+    },{
+        name: 'languages_spoken',
         displayName: 'Languages Spoken Fluently',
         dataType: 'multi-select',
         options: [
@@ -96,14 +98,15 @@ Example:
         ],
         maxItems: 10            
     }    
- }
+ ]
 ```
 
- - `name/key` - db column/model attribute name
+ - `name` - db column/model attribute name
  - `displayName` - display name of the column for the user
  - `dataType` - the column's dataType - currently supports `string`, `integer`, `date`, `datetime`, `multi-select` (from provided options)
  - `options` (for datatype multi-select) - array with each array element in format { key: 'key', value: 'value' }
- - `maxItems` (for datatype multi-select) - the maximum number of values that can be selected from the options array 
+ - `maxItems` (for datatype multi-select) - the maximum number of values that can be selected from the options array
+ - `notFilterable` - if the same columns array is being used to populate a table (or other) but a particular column should be filterable, set notFilterable to true. You don't need to include notFilterable: false - that will be assumed.
 
 ### active-filters format
 

@@ -21,7 +21,7 @@
                 <label class="sr-only">Column</label>
                 <select @change="columnSelected" class="form-control" v-model="columnName">
                     <option value="">-- Select --</option>
-                    <option v-for="(key,value) in columns" value="{{ key }}">{{ value.displayName }}</option>
+                    <option v-for="(key,value) in filterableColumns" value="{{ key }}">{{ value.displayName }}</option>
                 </select>
             </div>
             <div class="form-group" v-show="showOperatorOptions">
@@ -103,6 +103,12 @@
                     if (column) return column.options;
                 }
                 return {}
+            },
+
+            filterableColumns() {
+                return this.columns.filter(function(column) {
+                    return !column.notFilterable;
+                });
             },
 
             supportsHtml5Date() {

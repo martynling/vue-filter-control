@@ -221,6 +221,11 @@
 
             getOperatorsForDataType(dataType) {
                 switch (dataType) {
+                    case 'boolean':
+                        return {
+                            '=': {displayText: 'equals'},
+                            '!=': {displayText: 'not equals'}
+                        };
                     case 'string':
                         return {
                             '=': {displayText: 'equals'},
@@ -245,10 +250,13 @@
                             '>=': {displayText: 'after or equals'}
                         };
                     case 'multi-select':
-                        return {
+                        var msOptions = {
                             '=': {displayText: 'equals', multiValue: false},
-                            'in': {displayText: 'is one of', multiValue: true}
                         };
+                        if (this.column && this.column.maxItems && this.column.maxItems > 1) {
+                            msOptions['in'] =  {displayText: 'is one of', multiValue: true}
+                        }
+                        return msOptions;
                 }
                 return {};
             },

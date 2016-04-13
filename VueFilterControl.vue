@@ -198,7 +198,8 @@
                     var optionKeys = filterValue.split(",");
                     for (var i=0; i<optionKeys.length;i++){
                         var opt = this.getSelectedOptionFromColumnAndKey(column, optionKeys[i]);
-                        optValues.push(opt.value);
+                        if (opt)
+                            optValues.push(opt.value);
                     }
                     option.value = optValues.join(", ");
                 }

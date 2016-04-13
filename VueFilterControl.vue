@@ -94,7 +94,7 @@
         computed: {
             operatorOptions() {
                 var column = this.getColumn(this.columnName)
-                return column ? this.getOperatorsForDataType(column.dataType) : {}
+                return column ? this.getOperatorsForDataType(column) : {}
             },
             
             filterValueOptions() {
@@ -215,12 +215,12 @@
             },
 
             getOperatorFromColumnAndKey(column, key) {
-                var operators = this.getOperatorsForDataType(column.dataType)
+                var operators = this.getOperatorsForDataType(column)
                 return operators ? operators[key] : null
             },
 
-            getOperatorsForDataType(dataType) {
-                switch (dataType) {
+            getOperatorsForDataType(column) {
+                switch (column.dataType) {
                     case 'boolean':
                         return {
                             '=': {displayText: 'equals'},
@@ -253,7 +253,7 @@
                         var msOptions = {
                             '=': {displayText: 'equals', multiValue: false},
                         };
-                        if (this.column && this.column.maxItems && this.column.maxItems > 1) {
+                        if (column.maxItems && column.maxItems > 1) {
                             msOptions['in'] =  {displayText: 'is one of', multiValue: true}
                         }
                         return msOptions;

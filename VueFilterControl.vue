@@ -154,7 +154,7 @@
                     case 'string':
                         this.freetextQuery = true
                         break
-                    case 'integer':
+                    case 'number':
                         this.freetextQuery = true
                         break
                     case 'date':
@@ -253,7 +253,7 @@
                             'begins': {displayText: 'begins with'},
                             'contains': {displayText: 'contains'}
                         };
-                    case 'integer':
+                    case 'number':
                         return {
                             '=': {displayText: 'equals'},
                             '<': {displayText: 'less than'},

@@ -29,7 +29,8 @@ After installing the plugin you can use it like this
 <vue-filter-control
     @filter-changed="refreshData"
     :columns="columns"
-    :active-filters.sync="myFilters">
+    :active-filters.sync="myFilters"
+    :opt-groups="optGroups">
 </vue-filter-control>
 ```
 
@@ -53,12 +54,17 @@ var vm = new Vue({
                     { key: 'es', value: 'Spanish' }
                     // ...more languages
                 ],
-                maxItems: 10            
+                maxItems: 10,
+                optGroup: 'group1'
             }    
         ],
         myFilters: [
             { column: 'first_name', operator: '=', value: 'Frank' },
             { column: 'languages_spoken', operator: 'in', value: 'en,fr' }
+        ],
+        optGroups: [
+            {value: 'group1', label: 'Group One'},
+            {value: 'group2', label: 'Group Two'}            
         ]
     },
     
@@ -103,10 +109,11 @@ Example:
 
  - `name` - db column/model attribute name
  - `displayName` - display name of the column for the user
- - `dataType` - the column's dataType - currently supports `string`, `integer`, `date`, `datetime`, `multi-select` (from provided options)
+ - `dataType` - the column's dataType - currently supports `string`, `number`, `date`, `datetime`, `multi-select` (from provided options)
  - `options` (for datatype multi-select) - array with each array element in format { key: 'key', value: 'value' }
  - `maxItems` (for datatype multi-select) - the maximum number of values that can be selected from the options array
  - `notFilterable` - if the same columns array is being used to populate a table (or other) but a particular column should be filterable, set notFilterable to true. You don't need to include notFilterable: false - that will be assumed.
+ - `optGroup` - if you want to group columns into an optGroup, specify the optGroup value for each column
 
 ### active-filters format
 
@@ -115,6 +122,12 @@ Often vue-filter-control will be loaded with no active filters. However, should 
  - `column` - actual db column name/model attribute name (corresponds to column name in columns object format) 
  - `operator` - either abbreviated internal version of operator or the actual operator that might be used in the query on the server (assumes measures will be taken on server to address SQL injection, etc.) 
  - `value` - value that would be used in an actual query
+
+### opt-groups format
+
+If you want columns to be grouped into options groups, you define the option groups via the opt-group prop
+ - `value` - the unique identifier for the option group
+ - `label` - the label is displayed in the select
 
 ## Events
 

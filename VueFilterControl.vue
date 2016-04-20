@@ -19,9 +19,15 @@
         <div v-show="newFilter" class="add-new-filter form-inline">
             <div class="form-group">
                 <label class="sr-only">Column</label>
-                <select @change="columnSelected" class="form-control" v-model="columnName">
+                <select v-if="!hasOptGroups" @change="columnSelected" class="form-control" v-model="columnName">
                     <option value="">-- Select --</option>
                     <option v-for="column in filterableColumns" value="{{ column.name }}">{{ column.displayName }}</option>
+                </select>
+                <select v-if="hasOptGroups" @change="columnSelected" class="form-control" v-model="columnName">
+                    <option value="">-- Select --</option>
+                    <optgroup v-for="group in optGroups" :label="group.label">
+                        <option v-for="column in getFilterableOptGroupColumns(group)" value="{{ column.name }}">{{ column.displayName }}</option>
+                    </optgroup>
                 </select>
             </div>
             <div class="form-group" v-show="showOperatorOptions">
@@ -66,7 +72,11 @@
             }, 
             columns: {
                 required: true
-            } 
+            } ,
+            optGroups: {
+                type: Array,
+                default: function () { return [] }
+            }
         },
 
         data: function () {
@@ -92,6 +102,10 @@
         },
 
         computed: {
+            hasOptGroups() {
+                return this.optGroups.length > 0
+            },
+
             operatorOptions() {
                 var column = this.getColumn(this.columnName)
                 return column ? this.getOperatorsForDataType(column) : {}
@@ -186,6 +200,12 @@
             getColumnDisplayName(columnName) {
                 var column = this.getColumn(columnName)
                 return column ? column.displayName : '-- Missing column --'
+            },
+
+            getFilterableOptGroupColumns(optGroup) {
+                return this.columns.filter(function(column, optGroup) {
+                    return !column.notFilterable && column.optGroup == optGroup.value;
+                });
             },
 
             getFilterValueDisplayText(columnName, filterValue) {

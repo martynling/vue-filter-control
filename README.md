@@ -46,7 +46,7 @@ var vm = new Vue({
             },{
                 name: 'languages_spoken',
                 displayName: 'Languages Spoken Fluently',
-                dataType: 'multi-select',
+                dataType: 'choice',
                 options: [
                     { key: 'en', value: 'English' },
                     { key: 'fr', value: 'French' },
@@ -94,7 +94,7 @@ Example:
     },{
         name: 'languages_spoken',
         displayName: 'Languages Spoken Fluently',
-        dataType: 'multi-select',
+        dataType: 'choice',
         options: [
             { key: 'en', value: 'English' },
             { key: 'fr', value: 'French' },
@@ -109,9 +109,9 @@ Example:
 
  - `name` - db column/model attribute name
  - `displayName` - display name of the column for the user
- - `dataType` - the column's dataType - currently supports `string`, `number`, `date`, `datetime`, `multi-select` (from provided options)
- - `options` (for datatype multi-select) - array with each array element in format { key: 'key', value: 'value' }
- - `maxItems` (for datatype multi-select) - the maximum number of values that can be selected from the options array
+ - `dataType` - the column's dataType - currently supports `string`, `number`, `date`, `datetime`, `choice` (from provided options)
+ - `options` (for datatype choice) - array with each array element in format { key: 'key', value: 'value' }
+ - `maxItems` (for datatype choice) - the maximum number of values that can be selected from the options array
  - `notFilterable` - if the same columns array is being used to populate a table (or other) but a particular column should be filterable, set notFilterable to true. You don't need to include notFilterable: false - that will be assumed.
  - `optGroup` - if you want to group columns into an optGroup, specify the optGroup value for each column
 

@@ -161,7 +161,7 @@
                     case 'datetime':
                         this.dateQuery = true
                         break
-                    case 'multi-select':
+                    case 'choice':
                         this.selectQuery = true
                         break
                 }
@@ -270,7 +270,7 @@
                             '>': {displayText: 'after'},
                             '>=': {displayText: 'after or equals'}
                         };
-                    case 'multi-select':
+                    case 'choice':
                         var msOptions = {
                             '=': {displayText: 'equals', multiValue: false},
                         };

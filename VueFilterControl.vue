@@ -203,7 +203,7 @@
             },
 
             getFilterableOptGroupColumns(optGroup) {
-                return this.columns.filter(function(column, optGroup) {
+                return this.columns.filter(function(column) {
                     return !column.notFilterable && column.optGroup == optGroup.value;
                 });
             },

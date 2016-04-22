@@ -13,32 +13,32 @@
                 </li>
             </ul>
             <p><a v-show="!newFilter" @click="addNewFilter" class="clickable">
-                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Filter
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> {{ getText('add_filter') }}
             </a></p>
         </div>
         <div v-show="newFilter" class="add-new-filter form-inline">
             <div class="form-group">
-                <label class="sr-only">Column</label>
+                <label class="sr-only">{{ getText('column') }}</label>
                 <select v-if="!hasOptGroups" @change="columnSelected" class="form-control" v-model="columnName">
                     <option value="">-- Select --</option>
                     <option v-for="column in filterableColumns" value="{{ column.name }}">{{ column.displayName }}</option>
                 </select>
                 <select v-if="hasOptGroups" @change="columnSelected" class="form-control" v-model="columnName">
-                    <option value="">-- Select --</option>
+                    <option value="">{{ getText('select_column') }}</option>
                     <optgroup v-for="group in optGroups" :label="group.label">
                         <option v-for="column in getFilterableOptGroupColumns(group)" value="{{ column.name }}">{{ column.displayName }}</option>
                     </optgroup>
                 </select>
             </div>
             <div class="form-group" v-show="showOperatorOptions">
-                <label class="sr-only">Operator</label>
+                <label class="sr-only">{{ getText('operator') }}</label>
                 <select @change="operatorSelected" class="form-control" v-model="operatorKey">
-                    <option value="">-- Select --</option>
+                    <option value="">{{ getText('select_operator') }}</option>
                     <option v-for="(key, value) in operatorOptions" value="{{ key }}">{{ value.displayText }}</option>
                 </select>
             </div>
             <div class="form-group" v-if="showFilterValueInput">
-                <label class="sr-only">Filter by</label>
+                <label class="sr-only">{{ getText('filter_by') }}</label>
                 <input v-if="freetextQuery" type="text" class="form-control" v-model="filterValue" />
                 <select v-if="selectQuery"
                         v-selectize="filterValue"
@@ -47,7 +47,7 @@
                         :settings="selectizeSettings"
                         class="form-control"
                         >
-                    <option value="">-- Select --</option>
+                    <option value="">{{ getText('select_value') }}</option>
                 </select>
                 <div v-if="dateQuery">
                     <input v-if="supportsHtml5Date" type="date" class="form-control" v-model="filterValue" />
@@ -55,8 +55,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <button :disabled="!showFilterValueInput" @click="setNewFilter" class="btn btn-sm btn-primary">Set Filter</button>
-                <button @click="cancelNewFilter" class="btn btn-sm">Cancel</button>
+                <button :disabled="!showFilterValueInput" @click="setNewFilter" class="btn btn-sm btn-primary">{{ getText('set_filter') }}</button>
+                <button @click="cancelNewFilter" class="btn btn-sm">{{ getText('cancel') }}</button>
             </div>
         </div>
     </div>
@@ -104,11 +104,27 @@
                 locales: {
                     en: {
                         filter_label: 'Filter:',
-                        add_filter: 'Add Filter'
+                        add_filter: 'Add Filter',
+                        column: 'Column',
+                        operator: 'Operator',
+                        select_column: '-- Select --',
+                        select_operator: '-- Select --',
+                        select_value: '-- Select --',
+                        filter_by: 'Filter by',
+                        set_filter: 'Set Filter',
+                        cancel: 'Cancel'
                     },
                     fr: {
                         filter_label: 'Filtre :',
-                        add_filter: 'Ajoute filtre'
+                        add_filter: 'Ajouter un filtre',
+                        column: 'Colonne',
+                        operator: 'Opérateur',
+                        select_column: '-- Sélectionner --',
+                        select_operator: '-- Sélectionner --',
+                        select_value: '-- Sélectionner --',
+                        filter_by: 'Filtrer par',
+                        set_filter: 'Définir le filtre',
+                        cancel: 'Annuler'
                     }
                 },
                 tStrings: {}
@@ -345,6 +361,9 @@
             },
 
             getText(id) {
+                if (!this.locales[this.locale][id]) {
+                    return this.locales['en'][id]
+                }
                 return this.locales[this.locale][id]
             }
         }

@@ -1,7 +1,7 @@
 <template>
     <div class="vue-filter-control">
         <div class="filter-display">
-            <p>Filter:</p>
+            <p>{{ getText('filter_label') }}</p>
             <ul class="active-filters">
                 <li v-for="activeFilter in activeFilters"
                     class="active-filter">
@@ -72,10 +72,13 @@
             }, 
             columns: {
                 required: true
-            } ,
+            },
             optGroups: {
                 type: Array,
                 default: function () { return [] }
+            },
+            locale: {
+                default: 'en'
             }
         },
 
@@ -97,7 +100,9 @@
                     labelField: 'value',
                     maxItems: 1,
                     plugins: ['remove_button']
-                }
+                },
+                locales: {},
+                tStrings: {}
             };
         },
 
@@ -328,8 +333,14 @@
                 });
                 this.$dispatch('filter-changed');
                 this.resetNewFilterData();
-            }
+            },
 
+            getText(id) {
+                if (!this.locales[this.locale]) {
+                    this.locales[this.locale] = require('./locale/' + this.locale + '.js')
+                }
+                return this.locales[this.locale][id]
+            }
         }
     }
 </script>

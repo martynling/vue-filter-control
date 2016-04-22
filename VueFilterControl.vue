@@ -112,7 +112,22 @@
                         select_value: '-- Select --',
                         filter_by: 'Filter by',
                         set_filter: 'Set Filter',
-                        cancel: 'Cancel'
+                        cancel: 'Cancel',
+                        equals: 'equals',
+                        not_equals: 'not equals',
+                        begins_with: 'begins with',
+                        contains: 'contains',
+                        less_than: 'less than',
+                        less_than_or_equals: 'less than or equals',
+                        greater_than: 'greater than',
+                        greater_than_or_equals: 'greater than or equals',
+                        before: 'before',
+                        before_or_on: 'before or on',
+                        after: 'after',
+                        after_or_on: 'after or on',
+                        is_one_of: 'is one of',
+                        column_missing: '-- Column Missing --',
+                        operator_missing: '-- Operator Missing --'
                     },
                     fr: {
                         filter_label: 'Filtre :',
@@ -229,7 +244,7 @@
             
             getColumnDisplayName(columnName) {
                 var column = this.getColumn(columnName)
-                return column ? column.displayName : '-- Missing column --'
+                return column ? column.displayName : this.getText('column_missing')
             },
 
             getFilterableOptGroupColumns(optGroup) {
@@ -260,9 +275,9 @@
                 var column = this.getColumn(columnName)
                 if (column) {
                     var operator = this.getOperatorFromColumnAndKey(column, key)
-                    return operator ? operator.displayText : '-- Operator missing --'
+                    return operator ? operator.displayText : this.getText('operator_missing')
                 }
-                return '-- Operator missing --'
+                return this.getText('operator_missing')
             },
 
             getOperatorFromColumnAndKey(column, key) {
@@ -274,38 +289,38 @@
                 switch (column.dataType) {
                     case 'boolean':
                         return {
-                            '=': {displayText: 'equals'},
-                            '!=': {displayText: 'not equals'}
+                            '=': {displayText: this.getText('equals')},
+                            '!=': {displayText: this.getText('not_equals')}
                         };
                     case 'string':
                         return {
-                            '=': {displayText: 'equals'},
-                            'begins': {displayText: 'begins with'},
-                            'contains': {displayText: 'contains'}
+                            '=': {displayText: this.getText('equals')},
+                            'begins': {displayText: this.getText('begins_with')},
+                            'contains': {displayText: this.getText('contains')}
                         };
                     case 'number':
                         return {
-                            '=': {displayText: 'equals'},
-                            '<': {displayText: 'less than'},
-                            '<=': {displayText: 'less than or equals'},
-                            '>': {displayText: 'greater than'},
-                            '>=': {displayText: 'greater than or equals'}
+                            '=': {displayText: this.getText('equals')},
+                            '<': {displayText: this.getText('less_than')},
+                            '<=': {displayText: this.getText('less_than_or_equals')},
+                            '>': {displayText: this.getText('greater_than')},
+                            '>=': {displayText: this.getText('greater_than_or_equals')}
                         };
                     case 'date':
                     case 'datetime':
                         return {
-                            '=': {displayText: 'equals'},
-                            '<': {displayText: 'before'},
-                            '<=': {displayText: 'before or equals'},
-                            '>': {displayText: 'after'},
-                            '>=': {displayText: 'after or equals'}
+                            '=': {displayText: this.getText('equals')},
+                            '<': {displayText: this.getText('before')},
+                            '<=': {displayText: this.getText('before or on')},
+                            '>': {displayText: this.getText('after')},
+                            '>=': {displayText: this.getText('after or on')}
                         };
                     case 'choice':
                         var msOptions = {
-                            '=': {displayText: 'equals', multiValue: false},
+                            '=': {displayText: this.getText('equals'), multiValue: false},
                         };
                         if (column.maxItems && column.maxItems > 1) {
-                            msOptions['in'] =  {displayText: 'is one of', multiValue: true}
+                            msOptions['in'] =  {displayText: this.getText('is one of'), multiValue: true}
                         }
                         return msOptions;
                 }

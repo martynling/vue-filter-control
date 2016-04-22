@@ -101,7 +101,16 @@
                     maxItems: 1,
                     plugins: ['remove_button']
                 },
-                locales: {},
+                locales: {
+                    en: {
+                        filter_label: 'Filter:',
+                        add_filter: 'Add Filter'
+                    },
+                    fr: {
+                        filter_label: 'Filtre :',
+                        add_filter: 'Ajoute filtre'
+                    }
+                },
                 tStrings: {}
             };
         },
@@ -336,9 +345,6 @@
             },
 
             getText(id) {
-                if (!this.locales[this.locale]) {
-                    this.locales[this.locale] = require('./locale/' + this.locale + '.js')
-                }
                 return this.locales[this.locale][id]
             }
         }

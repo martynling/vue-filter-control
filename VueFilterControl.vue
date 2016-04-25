@@ -20,7 +20,7 @@
             <div class="form-group">
                 <label class="sr-only">{{ getText('column') }}</label>
                 <select v-if="!hasOptGroups" @change="columnSelected" class="form-control" v-model="columnName">
-                    <option value="">-- Select --</option>
+                    <option value="">{{ getText('select_column') }}</option>
                     <option v-for="column in filterableColumns" value="{{ column.name }}">{{ column.displayName }}</option>
                 </select>
                 <select v-if="hasOptGroups" @change="columnSelected" class="form-control" v-model="columnName">
@@ -141,8 +141,7 @@
                         set_filter: 'Définir le filtre',
                         cancel: 'Annuler'
                     }
-                },
-                tStrings: {}
+                }
             };
         },
 

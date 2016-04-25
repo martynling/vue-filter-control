@@ -311,16 +311,16 @@
                         return {
                             '=': {displayText: this.getText('equals')},
                             '<': {displayText: this.getText('before')},
-                            '<=': {displayText: this.getText('before or on')},
+                            '<=': {displayText: this.getText('before_or_on')},
                             '>': {displayText: this.getText('after')},
-                            '>=': {displayText: this.getText('after or on')}
+                            '>=': {displayText: this.getText('after_or_on')}
                         };
                     case 'choice':
                         var msOptions = {
                             '=': {displayText: this.getText('equals'), multiValue: false},
                         };
                         if (column.maxItems && column.maxItems > 1) {
-                            msOptions['in'] =  {displayText: this.getText('is one of'), multiValue: true}
+                            msOptions['in'] =  {displayText: this.getText('is_one_of'), multiValue: true}
                         }
                         return msOptions;
                 }

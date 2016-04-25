@@ -140,6 +140,9 @@
                         filter_by: 'Filtrer par',
                         set_filter: 'Définir le filtre',
                         cancel: 'Annuler'
+                    },
+                    pt: {
+                        
                     }
                 }
             };

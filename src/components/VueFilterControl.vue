@@ -2,18 +2,23 @@
     <div class="vue-filter-control">
         <div class="filter-display">
             <p>{{ getText('filter_label') }}</p>
-            <ul class="active-filters">
-                <li v-for="(key, activeFilter) in activeFilters"
-                    class="active-filter">
-                    <a class="filter-text" @click="editFilter(key)" aria-label="Edit">
-                      {{ getColumnDisplayName(activeFilter.column) }}
-                      {{ getOperatorDisplayText(activeFilter.column, activeFilter.operator) }}
-                      {{ getFilterValueDisplayText(activeFilter.column, activeFilter.value) }}
-                    </a>
-                    <a class="filter-remove" @click="removeFilter(activeFilter)" aria-hidden="true" aria-label="Remove">&times;</a>
-                </li>
-            </ul>
-            <p><a v-show="!newFilter" @click="addNewFilter" class="clickable">
+            <div class="active-filters">
+                <a v-for="(key, activeFilter) in activeFilters"
+                   class="filter-box"
+                   @click="editFilter(key)"
+                   aria-label="Edit"
+                >
+                  <span class="filter-text">
+                  {{ getColumnDisplayName(activeFilter.column) }}
+                  {{ getOperatorDisplayText(activeFilter.column, activeFilter.operator) }}
+                  {{ getFilterValueDisplayText(activeFilter.column, activeFilter.value) }}
+                  </span>
+                  <span class="filter-remove" @click="removeFilter(activeFilter)" aria-hidden="true" aria-label="Remove">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </span>
+                </a>
+            </div>
+            <p><a class="add-filter" v-show="!newFilter" @click="addNewFilter" class="clickable">
                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> {{ getText('add_filter') }}
             </a></p>
         </div>
@@ -411,37 +416,68 @@
 </script>
 
 <style lang="scss">
+    .vue-filter-control {
+      font-size: 14px;
+    }
+
     .vue-filter-control .filter-display p {
         float: left;
     }
 
-    .vue-filter-control ul {
+    .vue-filter-control .active-filters {
         float: left;
-        padding-left: 4px;
+        margin-left: 2px;
         margin-top: -4px;
     }
-    .vue-filter-control ul > li {
+
+    .vue-filter-control .active-filters > a.filter-box {
+        padding-right: 30px;
+        color: #fff;
+        height: 30px;
+        line-height: 30px;
+        overflow: hidden;
+        position: relative;
+        text-decoration: none;
+        border-radius: 3px;
+        background: #337ab7;
+        margin: 0 4px 0 0;
         display: inline-block;
-        margin: 0 8px 6px 0;
-        border: solid 1px grey;
     }
 
-    .vue-filter-control ul > li > a.filter-text {
-        padding: 5px 8px 4px;
-        border-right: solid 1px grey;
+    .vue-filter-control .active-filters > a.filter-box > span.filter-text {
+      padding: 0 8px;
+      text-decoration: none;
+      height: 18px;
+      line-height: 18px;
+      display: inline-block;
     }
 
-    .vue-filter-control ul > li > a.filter-remove {
-        padding: 4px 8px 0px 6px;
+    .vue-filter-control .active-filters > a.filter-box > span.filter-text:hover {
+      padding: 0 8px;
+      text-decoration: underline;
+    }
+
+    .vue-filter-control .active-filters > a.filter-box > span.filter-remove {
+        padding: 0 8px 0;
+        background: lighten(#337ab7, 5%);
+        color: darken(#fff, 5%);
+        border-radius: 0 3px 3px 0;
+        position: absolute;
+        right: 0;
+        top: 0;
         cursor: pointer;
-        font-weight: bold;
-        font-size: larger;
-        color: grey;
     }
-    .vue-filter-control ul > li > a.filter-remove:hover {
-        color: lighten(grey, 20%);
+
+    .vue-filter-control .active-filters > a.filter-box > span.filter-remove:hover {
+        color: #fff;
+        background: lighten(#337ab7, 10%);
         text-decoration: none;
     }
+
+    .vue-filter-control .filter-display .add-filter {
+      margin-left: 2px;
+    }
+
 
     .vue-filter-control .add-new-filter {
         width: 100%;
@@ -451,4 +487,5 @@
     .vue-filter-control .selectize-control {
         min-width: 200px;
     }
+
 </style>

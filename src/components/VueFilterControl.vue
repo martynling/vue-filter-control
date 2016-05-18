@@ -3,12 +3,13 @@
         <div class="filter-display">
             <p>{{ getText('filter_label') }}</p>
             <ul class="active-filters">
-                <li v-for="activeFilter in activeFilters"
+                <li v-for="(key, activeFilter) in activeFilters"
                     class="active-filter">
-                    <span class="filter-text">{{ getColumnDisplayName(activeFilter.column) }}
-                        {{ getOperatorDisplayText(activeFilter.column, activeFilter.operator) }}
-                        {{ getFilterValueDisplayText(activeFilter.column, activeFilter.value) }}
-                    </span>
+                    <a class="filter-text" @click="editFilter(key)" aria-label="Edit">
+                      {{ getColumnDisplayName(activeFilter.column) }}
+                      {{ getOperatorDisplayText(activeFilter.column, activeFilter.operator) }}
+                      {{ getFilterValueDisplayText(activeFilter.column, activeFilter.value) }}
+                    </a>
                     <a class="filter-remove" @click="removeFilter(activeFilter)" aria-hidden="true" aria-label="Remove">&times;</a>
                 </li>
             </ul>
@@ -84,6 +85,7 @@
 
         data: function () {
             return {
+                editingFilter: null,
                 newFilter: false,
                 showOperatorOptions: false,
                 showFilterValueInput: false,
@@ -223,6 +225,9 @@
 
             cancelNewFilter() {
                 this.newFilter = false;
+                if (this.editingFilter !== null) {
+                    this.resetNewFilterData()
+                }
             },
 
             columnSelected() {
@@ -235,6 +240,16 @@
                     alert('Column configuration error')
                 }
                 this.showOperatorOptions = true
+            },
+
+            editFilter (filterKey) {
+                this.editingFilter = filterKey
+                this.newFilter = true
+                this.columnName = this.activeFilters[filterKey].column
+                this.showOperatorOptions = true
+                this.operatorKey = this.activeFilters[filterKey].operator
+                this.filterValue = this.activeFilters[filterKey].value
+                this.operatorSelected(false)
             },
 
             getColumn(columnName) {
@@ -342,9 +357,9 @@
                 return null
             },
             
-            operatorSelected() {
+            operatorSelected(resetValue = true) {
                 this.showFilterValueInput = false // Force a reload of input based on operator
-                this.filterValue = '';
+                if (resetValue) this.filterValue = '';
                 this.activateFilterValueInput()
                 this.$nextTick(function () {
                     // Allow a tick for the input to be removed and then re-create it
@@ -358,22 +373,29 @@
             },
 
             resetNewFilterData() {
-                this.newFilter = false;
-                this.showOperatorOptions = false;
-                this.showFilterValueInput = false;
-                this.column = null;
-                this.columnName = '';
-                this.operator = null;
-                this.operatorKey = '';
-                this.filterValue = '';
+                this.editingFilter = null
+                this.newFilter = false
+                this.showOperatorOptions = false
+                this.showFilterValueInput = false
+                this.column = null
+                this.columnName = ''
+                this.operator = null
+                this.operatorKey = ''
+                this.filterValue = ''
             },
 
             setNewFilter() {
-                this.activeFilters.push({
-                    column: this.columnName,
-                    operator: this.operatorKey,
-                    value: this.filterValue
-                });
+                var newFilter = {
+                  column: this.columnName,
+                  operator: this.operatorKey,
+                  value: this.filterValue
+                }
+
+                if (this.editingFilter === null) {
+                  this.activeFilters.push(newFilter);
+                } else {
+                  this.activeFilters.$set(this.editingFilter, newFilter)
+                }
                 this.$dispatch('filter-changed', this.activeFilters);
                 this.resetNewFilterData();
             },
@@ -404,19 +426,19 @@
         border: solid 1px grey;
     }
 
-    .vue-filter-control ul > li > .filter-text {
+    .vue-filter-control ul > li > a.filter-text {
         padding: 5px 8px 4px;
         border-right: solid 1px grey;
     }
 
-    .vue-filter-control ul > li > a {
-        padding: 4px 8px 0px 5px;
+    .vue-filter-control ul > li > a.filter-remove {
+        padding: 4px 8px 0px 6px;
         cursor: pointer;
         font-weight: bold;
         font-size: larger;
         color: grey;
     }
-    .vue-filter-control ul > li > a:hover {
+    .vue-filter-control ul > li > a.filter-remove:hover {
         color: lighten(grey, 20%);
         text-decoration: none;
     }

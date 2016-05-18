@@ -5,7 +5,8 @@
         @filter-changed="refreshData"
         :columns="columns"
         :active-filters.sync="myFilters"
-        :opt-groups="optGroups">
+        :opt-groups="optGroups"
+    >
     </vue-filter-control>
     <div class="data-display">
       Your filters object:

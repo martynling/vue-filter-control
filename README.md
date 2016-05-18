@@ -8,12 +8,49 @@ This filter control does not re-query your data for you, but provides a control 
 - Vue.js ^`1.0.16`
 - vue-selectize  (Vue.js v1 branch currently pulls from github.com/martynling/vue-selectize)
 
+You may also need to include the following dependency:
+- jquery `"^2.1.3"` (vue-selectize is dependent on selectize which is dependent on jquery) 
+
+
 # Installation
 Assuming that you'll be using gulp or browserify to roll all your js into a single file:
  
 ```shell
 $ npm install vue-filter-control --save-dev
 ```
+
+You may also need to add the following to the devDependencies of a Laravel project to make the gulp build work:
+``` 
+"babel-preset-stage-2": "^6.1.18"
+```
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# lint all *.js and *.vue files
+npm run lint
+
+# run unit tests
+npm test
+```
+
+For more information see the [docs for vueify](https://github.com/vuejs/vueify).
+
+# Changes between v0.0.2 and v1.0.0
+
+* dataType `multi-select` renamed to `choice`
+* dropdowns support typeahead
+* clicking on an existing filter enables it to be edited (instead of having to delete a filter and add a new one)
+* support for option groups within the filter list
 
 # Usage
 
@@ -138,7 +175,7 @@ If you want columns to be grouped into options groups, you define the option gro
 When time allows, I would like to develop the following:
 
  - Demo site
- - Localization
  - Improved date input on Firefox and Safari
  - Extend operators to include use of NOT
  - Ability to use OR logic and nesting (currently only AND is supported as logic between filters)
+ 

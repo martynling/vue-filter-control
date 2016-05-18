@@ -98,6 +98,7 @@
                 selectizeSettings: {
                     valueField: 'key',
                     labelField: 'value',
+                    searchField: 'value',
                     maxItems: 1,
                     plugins: ['remove_button']
                 },
@@ -142,7 +143,7 @@
                         cancel: 'Annuler'
                     },
                     pt: {
-                        
+
                     }
                 }
             };
@@ -373,7 +374,7 @@
                     operator: this.operatorKey,
                     value: this.filterValue
                 });
-                this.$dispatch('filter-changed');
+                this.$dispatch('filter-changed', this.activeFilters);
                 this.resetNewFilterData();
             },
 

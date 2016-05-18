@@ -1,0 +1,132 @@
+<template>
+  <div id="app">
+    <hello></hello>
+    <vue-filter-control
+        @filter-changed="refreshData"
+        :columns="columns"
+        :active-filters.sync="myFilters"
+        :opt-groups="optGroups">
+    </vue-filter-control>
+    <div class="data-display">
+      Your filters object:
+      <pre>{{ myFilters | json }}</pre>
+    </div>
+  </div>
+</template>
+
+<script>
+/* global $ */
+import Hello from './components/Hello.vue'
+import VueFilterControl from './components/VueFilterControl.vue'
+
+var moment = require('moment')
+
+export default {
+  components: {
+    Hello,
+    'vue-filter-control': VueFilterControl
+  },
+  data: function () {
+    return {
+      loading: false,
+      myFilters: [],
+      optGroups: [
+        {value: 'user', label: 'User'},
+        {value: 'item', label: 'Purchased Item'}
+      ]
+    }
+  },
+
+  computed: {
+    columns () {
+      return [
+        {
+          name: 'id',
+          displayName: '#',
+          dataType: 'number',
+          optGroup: 'user'
+        }, {
+          name: 'email',
+          displayName: 'Email',
+          dataType: 'string',
+          optGroup: 'user'
+        }, {
+          name: 'first_name',
+          displayName: 'First Name',
+          dataType: 'string',
+          optGroup: 'user'
+        }, {
+          name: 'last_name',
+          displayName: 'Last Name',
+          dataType: 'string',
+          optGroup: 'user'
+        }, {
+          name: 'role_id',
+          displayName: 'Role',
+          dataType: 'choice',
+          options: [
+              {key: 1, value: 'Admin'},
+              {key: 2, value: 'Owner'},
+              {key: 3, value: 'Quality Control'}
+          ],
+          hidden: true,
+          optGroup: 'user'
+        }, {
+          name: 'roleTitle',
+          displayName: 'Role',
+          dataType: 'string',
+          notFilterable: true
+        }, {
+          name: 'joined',
+          displayName: 'Joined',
+          dataType: 'date',
+          optGroup: 'user'
+        }, {
+          name: 'last_login',
+          displayName: 'Last logged in',
+          dataType: 'datetime',
+          optGroup: 'user'
+        }, {
+          name: 'notes',
+          displayName: 'Notes',
+          dataType: 'string',
+          dataFormat: 'paragraph',
+          expandable: true,
+          expandableFrom: 20,
+          optGroup: 'user'
+        }, {
+          name: 'id',
+          displayName: '#',
+          dataType: 'number',
+          optGroup: 'item'
+        }, {
+          name: 'name',
+          displayName: 'Name',
+          dataType: 'string',
+          optGroup: 'item'
+        }, {
+          name: 'price',
+          displayName: 'Price',
+          dataType: 'number',
+          optGroup: 'item'
+        }
+      ]
+    }
+  },
+
+  methods: {
+    refreshData (e) {
+      alert ('filter-changed event fired. Data passed:\n' + JSON.stringify(e))
+    }
+  }
+}
+</script>
+
+<style>
+body {
+  font-family: Helvetica, sans-serif;
+}
+  .data-display {
+    clear: left;
+  }
+</style>

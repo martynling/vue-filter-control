@@ -16,7 +16,6 @@
 </template>
 
 <script>
-/* global $ */
 import VueFilterControl from './components/VueFilterControl.vue'
 
 export default {
@@ -77,7 +76,7 @@ export default {
             {key: 1, value: 'Funk'},
             {key: 2, value: 'Jazz'},
             {key: 3, value: 'Pop'},
-            {key: 4, value: 'Ska'},
+            {key: 4, value: 'Ska'}
           ],
           maxItems: 3,
           hidden: true,
@@ -127,7 +126,7 @@ export default {
 
   methods: {
     refreshData (e) {
-      alert ('filter-changed event fired. Data passed:\n' + JSON.stringify(e))
+      alert('filter-changed event fired. Data passed:\n' + JSON.stringify(e))
     }
   }
 }

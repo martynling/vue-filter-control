@@ -251,10 +251,16 @@
                 this.editingFilter = filterKey
                 this.newFilter = true
                 this.columnName = this.activeFilters[filterKey].column
-                this.showOperatorOptions = true
                 this.operatorKey = this.activeFilters[filterKey].operator
-                this.filterValue = this.activeFilters[filterKey].value
+                this.showOperatorOptions = true
                 this.operatorSelected(false)
+                this.$nextTick(function () {
+                  this.filterValue = this.activeFilters[filterKey].value
+                  var column = this.getColumn(this.columnName);
+                  if (column.maxItems && column.maxItems > 1) {
+                    this.filterValue = this.filterValue.split(',')
+                  }
+                })
             },
 
             getColumn(columnName) {
@@ -455,6 +461,7 @@
     .vue-filter-control .active-filters > a.filter-box > span.filter-text:hover {
       padding: 0 8px;
       text-decoration: underline;
+      cursor: pointer;
     }
 
     .vue-filter-control .active-filters > a.filter-box > span.filter-remove {

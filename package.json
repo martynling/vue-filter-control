@@ -1,13 +1,13 @@
 {
   "name": "vue-filter-control",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-beta",
   "description": "Vue.js UI component that allows users to define multiple filters that can then be used to filter data",
   "main": "./index.js",
   "scripts": {
-    "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o dist/build.js",
+    "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o demo/build.js",
     "serve": "http-server -c 1 -a localhost",
     "dev": "npm-run-all --parallel watchify serve",
-    "build": "cross-env NODE_ENV=production browserify -e src/main.js | uglifyjs -c warnings=false -m > dist/build.js",
+    "build": "cross-env NODE_ENV=production browserify -e src/main.js | uglifyjs -c warnings=false -m > demo/build.js",
     "lint": "eslint --ext .js,.vue src test/unit",
     "test": "karma start karma.conf.js"
   },
@@ -31,7 +31,7 @@
   "dependencies": {
     "jquery": "^2.1.3",
     "vue": "^1.0.0",
-    "vue-selectize": "martynling/vue-selectize#b168f8492e6369631d5b8d050894e53d62a9b7e4"
+    "vue-selectize": "martynling/vue-selectize#423155c95f9a23cc54ac06889e7d6bcf465b524e"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
@@ -70,7 +70,7 @@
       "vueify"
     ]
   },
-  "homepage": "https://github.com/martynling/vue-simple-grid#readme",
+  "homepage": "https://github.com/martynling/vue-filter-control#readme",
   "directories": {
     "test": "test"
   }

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <hello></hello>
+    <h1>Vue Filter Control Dev</h1>
     <vue-filter-control
         @filter-changed="refreshData"
         :columns="columns"
@@ -17,14 +17,10 @@
 
 <script>
 /* global $ */
-import Hello from './components/Hello.vue'
 import VueFilterControl from './components/VueFilterControl.vue'
-
-var moment = require('moment')
 
 export default {
   components: {
-    Hello,
     'vue-filter-control': VueFilterControl
   },
   data: function () {
@@ -70,6 +66,20 @@ export default {
               {key: 2, value: 'Owner'},
               {key: 3, value: 'Quality Control'}
           ],
+          hidden: true,
+          optGroup: 'user'
+        }, {
+          name: 'music_id',
+          displayName: 'Favourite Music',
+          dataType: 'choice',
+          options: [
+            {key: 0, value: 'Classical'},
+            {key: 1, value: 'Funk'},
+            {key: 2, value: 'Jazz'},
+            {key: 3, value: 'Pop'},
+            {key: 4, value: 'Ska'},
+          ],
+          maxItems: 3,
           hidden: true,
           optGroup: 'user'
         }, {

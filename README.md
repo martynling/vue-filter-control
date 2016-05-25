@@ -113,6 +113,7 @@ var vm = new Vue({
 });
 ```
 
+You'll also want to load one of selectize's CSS files to style your inputs. You should find what you want in `node_modules/selectize/dist/css`. See http://selectize.github.io/selectize.js/ for more info. 
 
 ## Props
 

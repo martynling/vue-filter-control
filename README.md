@@ -8,12 +8,49 @@ This filter control does not re-query your data for you, but provides a control 
 - Vue.js ^`1.0.16`
 - vue-selectize  (Vue.js v1 branch currently pulls from github.com/martynling/vue-selectize)
 
+You may also need to include the following dependency:
+- jquery `"^2.1.3"` (vue-selectize is dependent on selectize which is dependent on jquery) 
+
+
 # Installation
 Assuming that you'll be using gulp or browserify to roll all your js into a single file:
  
 ```shell
 $ npm install vue-filter-control --save-dev
 ```
+
+You may also need to add the following to the devDependencies of a Laravel project to make the gulp build work:
+``` 
+"babel-preset-stage-2": "^6.1.18"
+```
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# lint all *.js and *.vue files
+npm run lint
+
+# run unit tests
+npm test
+```
+
+For more information see the [docs for vueify](https://github.com/vuejs/vueify).
+
+# Changes between v0.0.2 and v1.0.0
+
+* dataType `multi-select` renamed to `choice`
+* dropdowns support typeahead
+* clicking on an existing filter enables it to be edited (instead of having to delete a filter and add a new one)
+* support for option groups within the filter list
 
 # Usage
 
@@ -29,7 +66,8 @@ After installing the plugin you can use it like this
 <vue-filter-control
     @filter-changed="refreshData"
     :columns="columns"
-    :active-filters.sync="myFilters">
+    :active-filters.sync="myFilters"
+    :opt-groups="optGroups">
 </vue-filter-control>
 ```
 
@@ -37,14 +75,15 @@ After installing the plugin you can use it like this
 var vm = new Vue({
     el: 'body',
     data: {
-        columns: {
-            'first_name': { 
+        columns: [ 
+            {
+                name: 'first_name', 
                 displayName: 'First Name',
-                dataType: 'string'
-            },
-            'languages_spoken': {
+                dataType: 'string'    
+            },{
+                name: 'languages_spoken',
                 displayName: 'Languages Spoken Fluently',
-                dataType: 'multi-select',
+                dataType: 'choice',
                 options: [
                     { key: 'en', value: 'English' },
                     { key: 'fr', value: 'French' },
@@ -52,12 +91,17 @@ var vm = new Vue({
                     { key: 'es', value: 'Spanish' }
                     // ...more languages
                 ],
-                maxItems: 10            
-            }
-        },
+                maxItems: 10,
+                optGroup: 'group1'
+            }    
+        ],
         myFilters: [
             { column: 'first_name', operator: '=', value: 'Frank' },
             { column: 'languages_spoken', operator: 'in', value: 'en,fr' }
+        ],
+        optGroups: [
+            {value: 'group1', label: 'Group One'},
+            {value: 'group2', label: 'Group Two'}            
         ]
     },
     
@@ -69,24 +113,26 @@ var vm = new Vue({
 });
 ```
 
+You'll also want to load one of selectize's CSS files to style your inputs. You should find what you want in `node_modules/selectize/dist/css`. See http://selectize.github.io/selectize.js/ for more info. 
 
 ## Props
 
-- `columns` is an object (essentially an associative array) defining the columns that can be used to filter data. See columns format below.
+- `columns` is an array of columns that can be used to filter data. See columns format below.
 - `active-filters` is an array that defines the current active filter. Any changes to the filter within the filter control will sync to the bound data. See data-filters format below.
 
 ### columns object format
 
 Example:
 ```javascript
- columns: { 
-    'first_name': {
+ columns: [ 
+    {
+        name: 'first_name', 
         displayName: 'First Name',
         dataType: 'string'    
-    },
-    'languages_spoken': {
+    },{
+        name: 'languages_spoken',
         displayName: 'Languages Spoken Fluently',
-        dataType: 'multi-select',
+        dataType: 'choice',
         options: [
             { key: 'en', value: 'English' },
             { key: 'fr', value: 'French' },
@@ -96,14 +142,16 @@ Example:
         ],
         maxItems: 10            
     }    
- }
+ ]
 ```
 
- - `name/key` - db column/model attribute name
+ - `name` - db column/model attribute name
  - `displayName` - display name of the column for the user
- - `dataType` - the column's dataType - currently supports `string`, `integer`, `date`, `datetime`, `multi-select` (from provided options)
- - `options` (for datatype multi-select) - array with each array element in format { key: 'key', value: 'value' }
- - `maxItems` (for datatype multi-select) - the maximum number of values that can be selected from the options array 
+ - `dataType` - the column's dataType - currently supports `string`, `number`, `date`, `datetime`, `choice` (from provided options)
+ - `options` (for datatype choice) - array with each array element in format { key: 'key', value: 'value' }
+ - `maxItems` (for datatype choice) - the maximum number of values that can be selected from the options array
+ - `notFilterable` - if the same columns array is being used to populate a table (or other) but a particular column should be filterable, set notFilterable to true. You don't need to include notFilterable: false - that will be assumed.
+ - `optGroup` - if you want to group columns into an optGroup, specify the optGroup value for each column
 
 ### active-filters format
 
@@ -113,6 +161,12 @@ Often vue-filter-control will be loaded with no active filters. However, should 
  - `operator` - either abbreviated internal version of operator or the actual operator that might be used in the query on the server (assumes measures will be taken on server to address SQL injection, etc.) 
  - `value` - value that would be used in an actual query
 
+### opt-groups format
+
+If you want columns to be grouped into options groups, you define the option groups via the opt-group prop
+ - `value` - the unique identifier for the option group
+ - `label` - the label is displayed in the select
+
 ## Events
 
  - `filter-changed` - whenever a change to the filters is set in the filter control, a filter-changed event occurs. The data bound to data-filters is also synced. So, this enables the data that depends on the filter to be requeried  
@@ -121,8 +175,7 @@ Often vue-filter-control will be loaded with no active filters. However, should 
 
 When time allows, I would like to develop the following:
 
- - Demo site
- - Localization
  - Improved date input on Firefox and Safari
  - Extend operators to include use of NOT
  - Ability to use OR logic and nesting (currently only AND is supported as logic between filters)
+ 

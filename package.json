@@ -1,6 +1,6 @@
 {
   "name": "vue-filter-control",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "description": "Vue.js UI component that allows users to define multiple filters that can then be used to filter data",
   "main": "./index.js",
   "scripts": {

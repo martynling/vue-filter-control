@@ -175,7 +175,6 @@ If you want columns to be grouped into options groups, you define the option gro
 
 When time allows, I would like to develop the following:
 
- - Demo site
  - Improved date input on Firefox and Safari
  - Extend operators to include use of NOT
  - Ability to use OR logic and nesting (currently only AND is supported as logic between filters)

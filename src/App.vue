@@ -6,7 +6,6 @@
         :columns="columns"
         :active-filters.sync="myFilters"
         :opt-groups="optGroups"
-        locale="pt"
     >
     </vue-filter-control>
     <div class="data-display">

@@ -45,19 +45,26 @@
       </div>
       <div class="form-group" v-if="showFilterValueInput">
         <label class="sr-only">{{ getText('filter_by') }}</label>
-        <input v-if="freetextQuery" type="text" class="form-control" v-model="filterValue" />
+        <input v-if="freetextQuery" type="text" class="form-control" v-model="filterValue"
+               @keyup.enter="setNewFilter"
+        />
         <select v-if="selectQuery"
                 v-selectize="filterValue"
                 v-model="filterValue"
                 :options="filterValueOptions"
                 :settings="selectizeSettings"
                 class="form-control"
+                @keyup.enter="setNewFilter"
         >
           <option value="">{{ getText('select_value') }}</option>
         </select>
         <div v-if="dateQuery">
-          <input v-if="supportsHtml5Date" type="date" class="form-control" v-model="filterValue" />
-          <input v-else type="text" class="form-control" v-model="filterValue" placeholder="YYYY-MM-DD"/>
+          <input v-if="supportsHtml5Date" type="date" class="form-control" v-model="filterValue"
+                 @keyup.enter="setNewFilter"
+          />
+          <input v-else type="text" class="form-control" v-model="filterValue" placeholder="YYYY-MM-DD"
+                 @keyup.enter="setNewFilter"
+          />
         </div>
       </div>
       <div class="form-group">

@@ -7,9 +7,7 @@ This filter control does not re-query your data for you, but provides a control 
 
 - Vue.js ^`1.0.16`
 - vue-selectize  (Vue.js v1 branch currently pulls from github.com/martynling/vue-selectize)
-
-You may also need to include the following dependency:
-- jquery `"^2.1.3"` (vue-selectize is dependent on selectize which is dependent on jquery) 
+- jquery `"^3.3.1"` (vue-selectize is dependent on selectize which is dependent on jquery. We require v3 of jquery since v2 has security vulnerabilities) 
 
 
 # Installation

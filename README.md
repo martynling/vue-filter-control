@@ -5,8 +5,8 @@ This filter control does not re-query your data for you, but provides a control 
 
 # Requirements
 
-- Vue.js ^`1.0.16`
-- vue-selectize  (Vue.js v1 branch currently pulls from github.com/martynling/vue-selectize)
+- Vue.js ^`2.0.0`
+- vue2-selectize
 - jquery `"^3.3.1"` (vue-selectize is dependent on selectize which is dependent on jquery. We require v3 of jquery since v2 has security vulnerabilities) 
 
 
@@ -43,6 +43,12 @@ npm test
 
 For more information see the [docs for vueify](https://github.com/vuejs/vueify).
 
+# Changes between v1.0 and v2.0
+
+Now dependent on Vue 2.0 and vue2-selectize.
+
+* The activeFilters property is no longer bound two-way since this is no longer supported in Vue 2.0. Instead whenever the activeFilters are changed within vue-filter-control, a `FilterChanged` event is fired and the updated activeFilters are passed as a parameter to the event.
+
 # Changes between v0.0.2 and v1.0.0
 
 * dataType `multi-select` renamed to `choice`
@@ -64,14 +70,14 @@ After installing the plugin you can use it like this
 <vue-filter-control
     @filter-changed="refreshData"
     :columns="columns"
-    :active-filters.sync="myFilters"
+    :active-filters="myFilters"
     :opt-groups="optGroups">
 </vue-filter-control>
 ```
 
 ```javascript
 var vm = new Vue({
-    el: 'body',
+    el: '#some-div-id',
     data: {
         columns: [ 
             {
@@ -104,7 +110,8 @@ var vm = new Vue({
     },
     
     methods: {
-        refreshData() {
+      
+        refreshData(activeFilters) {
             // Your AJAX or other code to requery your data based on the latest filters
         }
     }
@@ -116,7 +123,7 @@ You'll also want to load one of selectize's CSS files to style your inputs. You 
 ## Props
 
 - `columns` is an array of columns that can be used to filter data. See columns format below.
-- `active-filters` is an array that defines the current active filter. Any changes to the filter within the filter control will sync to the bound data. See data-filters format below.
+- `active-filters` is an array that defines the current active filter. See FilterChanged event below for how changes to active-filters are passed back.
 
 ### columns object format
 
@@ -167,13 +174,5 @@ If you want columns to be grouped into options groups, you define the option gro
 
 ## Events
 
- - `filter-changed` - whenever a change to the filters is set in the filter control, a filter-changed event occurs. The data bound to data-filters is also synced. So, this enables the data that depends on the filter to be requeried  
-
-# Future Developments
-
-When time allows, I would like to develop the following:
-
- - Improved date input on Firefox and Safari
- - Extend operators to include use of NOT
- - Ability to use OR logic and nesting (currently only AND is supported as logic between filters)
+ - `filter-changed` - whenever a change to the filters is set in the filter control, a filter-changed event occurs which passes the complete set of filters. Note: in the latest version, active-filters is no longer bound 2 ways so you'll need to sync your activeFilters.  
  

@@ -4,13 +4,13 @@
     <vue-filter-control
         @filter-changed="refreshData"
         :columns="columns"
-        :active-filters.sync="myFilters"
+        :active-filters="myFilters"
         :opt-groups="optGroups"
     >
     </vue-filter-control>
     <div class="data-display">
       Your filters object:
-      <pre>{{ myFilters | json }}</pre>
+      <pre>{{ myFilters }}</pre>
     </div>
   </div>
 </template>
@@ -105,7 +105,7 @@ export default {
           expandableFrom: 20,
           optGroup: 'user'
         }, {
-          name: 'id',
+          name: 'item_id',
           displayName: '#',
           dataType: 'number',
           optGroup: 'item'

@@ -3,9 +3,10 @@
     <div class="filter-display">
       <p>{{ getText('filter_label') }}</p>
       <div class="active-filters">
-        <a v-for="(key, activeFilter) in activeFilters"
+        <a v-for="(activeFilter, key) in activeFilters"
+           v-bind:key="activeFilter.id"
            class="filter-box"
-           @click="editFilter(key)"
+           v-on:click="editFilter(key)"
            aria-label="Edit"
         >
           <span class="filter-text">
@@ -13,76 +14,151 @@
           {{ getOperatorDisplayText(activeFilter.column, activeFilter.operator) }}
           {{ getFilterValueDisplayText(activeFilter.column, activeFilter.value) }}
           </span>
-          <span class="filter-remove" @click="removeFilter(activeFilter)" aria-hidden="true" aria-label="Remove">
+          <span class="filter-remove"
+                v-on:click="removeFilter(activeFilter)"
+                aria-hidden="true"
+                aria-label="Remove">
             <span class="glyphicon glyphicon-remove"></span>
           </span>
         </a>
       </div>
-      <p><a class="add-filter" v-show="!newFilter" @click="addNewFilter" class="clickable">
-        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> {{ getText('add_filter') }}
+      <p><a class="add-filter clickable"
+            v-show="!newFilter"
+            v-on:click="addNewFilter"
+      >
+        <span class="glyphicon glyphicon-plus-sign"
+              aria-hidden="true"
+        ></span>
+        {{ getText('add_filter') }}
       </a></p>
     </div>
-    <div v-show="newFilter" class="add-new-filter form-inline">
+    <div v-show="newFilter"
+         class="add-new-filter form-inline">
       <div class="form-group">
         <label class="sr-only">{{ getText('column') }}</label>
-        <select v-if="!hasOptGroups" @change="columnSelected" class="form-control" v-model="columnName">
-          <option value="">{{ getText('select_column') }}</option>
-          <option v-for="column in filterableColumns" value="{{ column.name }}">{{ column.displayName }}</option>
+        <select v-if="!hasOptGroups"
+                v-on:change="columnSelected"
+                class="form-control"
+                v-model="columnName"
+        >
+          <option value="">
+            {{ getText('select_column') }}
+          </option>
+          <option v-for="column in filterableColumns"
+                  v-bind:key="column.id"
+                  v-bind:value="column.name"
+          >
+            {{ column.displayName }}
+          </option>
         </select>
-        <select v-if="hasOptGroups" @change="columnSelected" class="form-control" v-model="columnName">
-          <option value="">{{ getText('select_column') }}</option>
-          <optgroup v-for="group in optGroups" :label="group.label">
-            <option v-for="column in getFilterableOptGroupColumns(group)" value="{{ column.name }}">{{ column.displayName }}</option>
+        <select v-if="hasOptGroups"
+                v-on:change="columnSelected"
+                class="form-control"
+                v-model="columnName"
+        >
+          <option value="">
+            {{ getText('select_column') }}
+          </option>
+          <optgroup v-for="group in optGroups"
+                    v-bind:key="group.value"
+                    v-bind:label="group.label"
+          >
+            <option v-for="column in getFilterableOptGroupColumns(group)"
+                    v-bind:key="column.id"
+                    v-bind:value="column.name"
+            >
+              {{ column.displayName }}
+            </option>
           </optgroup>
         </select>
       </div>
-      <div class="form-group" v-show="showOperatorOptions">
+      <div class="form-group"
+           v-show="showOperatorOptions"
+      >
         <label class="sr-only">{{ getText('operator') }}</label>
-        <select @change="operatorSelected" class="form-control" v-model="operatorKey">
-          <option value="">{{ getText('select_operator') }}</option>
-          <option v-for="(key, value) in operatorOptions" value="{{ key }}">{{ value.displayText }}</option>
+        <select v-on:change="operatorSelected"
+                class="form-control"
+                v-model="operatorKey"
+        >
+          <option value="">
+            {{ getText('select_operator') }}
+          </option>
+          <option v-for="(value, key) in operatorOptions"
+                  v-bind:key="key"
+                  v-bind:value="key"
+          >
+            {{ value.displayText }}
+          </option>
         </select>
       </div>
-      <div class="form-group" v-if="showFilterValueInput">
+      <div class="form-group"
+           v-if="showFilterValueInput"
+      >
         <label class="sr-only">{{ getText('filter_by') }}</label>
-        <input v-if="freetextQuery" type="text" class="form-control" v-model="filterValue"
-               @keyup.enter="setNewFilter"
+        <input v-if="freetextQuery"
+               type="text"
+               class="form-control"
+               v-model="filterValue"
+               v-on:keyup.enter="setNewFilter"
         />
-        <select v-if="selectQuery"
-                v-selectize="filterValue"
+        <selectize v-if="selectQuery"
                 v-model="filterValue"
-                :options="filterValueOptions"
                 :settings="selectizeSettings"
                 class="form-control"
-                @keyup.enter="setNewFilter"
+                v-on:keyup.enter="setNewFilter"
         >
           <option value="">{{ getText('select_value') }}</option>
-        </select>
+          <option v-for="option in filterValueOptions"
+                  v-bind:key="option.key"
+                  v-bind:value="option.key"
+          >
+            {{ option.value }}
+          </option>
+        </selectize>
         <div v-if="dateQuery">
-          <input v-if="supportsHtml5Date" type="date" class="form-control" v-model="filterValue"
-                 @keyup.enter="setNewFilter"
+          <input v-if="supportsHtml5Date"
+                 type="date" class="form-control"
+                 v-model="filterValue"
+                 v-on:keyup.enter="setNewFilter"
           />
-          <input v-else type="text" class="form-control" v-model="filterValue" placeholder="YYYY-MM-DD"
-                 @keyup.enter="setNewFilter"
+          <input v-else
+                 type="text"
+                 class="form-control"
+                 v-model="filterValue"
+                 placeholder="YYYY-MM-DD"
+                 v-on:keyup.enter="setNewFilter"
           />
         </div>
       </div>
       <div class="form-group">
-        <button :disabled="!showFilterValueInput" @click="setNewFilter" class="btn btn-sm btn-primary">{{ getText('set_filter') }}</button>
-        <button @click="cancelNewFilter" class="btn btn-sm">{{ getText('cancel') }}</button>
+        <button :disabled="!showFilterValueInput"
+                v-on:click="setNewFilter"
+                class="btn btn-sm btn-primary"
+        >
+          {{ getText('set_filter') }}
+        </button>
+        <button v-on:click="cancelNewFilter"
+                class="btn btn-sm"
+        >
+          {{ getText('cancel') }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/babel">
+  import Selectize from 'vue2-selectize'
+
   /* global Modernizr */
   export default {
+    components: {
+      Selectize
+    },
     props: {
       activeFilters: {
         type: Array,
-        required: true,
-        twoWay: true
+        required: true
       },
       columns: {
         required: true
@@ -209,13 +285,13 @@
       },
 
       operatorOptions () {
-        var column = this.getColumn(this.columnName)
+        let column = this.getColumn(this.columnName)
         return column ? this.getOperatorsForDataType(column) : {}
       },
 
       filterValueOptions () {
         if (this.columnName) {
-          var column = this.getColumn(this.columnName)
+          let column = this.getColumn(this.columnName)
           if (column) return column.options
         }
         return {}
@@ -245,9 +321,9 @@
         if (!this.columnName || !this.getColumn(this.columnName)) {
           return false
         }
-        var column = this.getColumn(this.columnName)
+        let column = this.getColumn(this.columnName)
         if (column.maxItems) {
-          var operator = this.getOperatorFromColumnAndKey(column, this.operatorKey)
+          let operator = this.getOperatorFromColumnAndKey(column, this.operatorKey)
           if (operator && operator.multiValue) this.selectizeSettings.maxItems = column.maxItems
           else this.selectizeSettings.maxItems = 1
         } else {
@@ -303,23 +379,20 @@
         this.showOperatorOptions = true
         this.operatorSelected(false)
         this.$nextTick(function () {
+          // can this be moved out of next tick? Was it just here for code that has now been removed
           this.filterValue = this.activeFilters[filterKey].value
-          var column = this.getColumn(this.columnName)
-          if (column.maxItems && column.maxItems > 1) {
-            this.filterValue = this.filterValue.split(',')
-          }
         })
       },
 
       getColumn (columnName) {
-        for (var i = 0;i < this.columns.length; i++) {
+        for (let i = 0;i < this.columns.length; i++) {
           if (this.columns[i].name === columnName) return this.columns[i]
         }
         return null
       },
 
       getColumnDisplayName (columnName) {
-        var column = this.getColumn(columnName)
+        let column = this.getColumn(columnName)
         return column ? column.displayName : this.getText('column_missing')
       },
 
@@ -330,15 +403,16 @@
       },
 
       getFilterValueDisplayText (columnName, filterValue) {
-        var column = this.getColumn(columnName)
-        if (!column.maxItems || column.maxItems === 1) {
-          var option = this.getSelectedOptionFromColumnAndKey(column, filterValue)
+        let column = this.getColumn(columnName)
+        let option = null
+        if (!column.hasOwnProperty('maxItems') || column.maxItems === 1) {
+          option = this.getSelectedOptionFromColumnAndKey(column, filterValue)
         } else { // array of keys
-          var optValues = []
+          let optValues = []
           option = {}
-          var optionKeys = filterValue.split(',')
-          for (var i = 0; i < optionKeys.length; i++) {
-            var opt = this.getSelectedOptionFromColumnAndKey(column, optionKeys[i])
+          let optionKeys = filterValue
+          for (let i = 0; i < optionKeys.length; i++) {
+            let opt = this.getSelectedOptionFromColumnAndKey(column, optionKeys[i])
             if (opt) optValues.push(opt.value)
           }
           option.value = optValues.join(', ')
@@ -347,16 +421,16 @@
       },
 
       getOperatorDisplayText (columnName, key) {
-        var column = this.getColumn(columnName)
+        let column = this.getColumn(columnName)
         if (column) {
-          var operator = this.getOperatorFromColumnAndKey(column, key)
+          let operator = this.getOperatorFromColumnAndKey(column, key)
           return operator ? operator.displayText : this.getText('operator_missing')
         }
         return this.getText('operator_missing')
       },
 
       getOperatorFromColumnAndKey (column, key) {
-        var operators = this.getOperatorsForDataType(column)
+        let operators = this.getOperatorsForDataType(column)
         return operators ? operators[key] : null
       },
 
@@ -391,7 +465,7 @@
               '>=': {displayText: this.getText('after_or_on')}
             }
           case 'choice':
-            var msOptions = {
+            let msOptions = {
               '=': {displayText: this.getText('equals'), multiValue: false}
             }
             if (column.maxItems && column.maxItems > 1) {
@@ -403,9 +477,9 @@
       },
 
       getSelectedOptionFromColumnAndKey (column, optionKey) {
-        var options = column.options
+        let options = column.options
         if (options) {
-          for (var i = 0; i < options.length; i++) {
+          for (let i = 0; i < options.length; i++) {
             if (options[i].key == optionKey) { // eslint-disable-line eqeqeq
               return options[i]
             }
@@ -425,8 +499,9 @@
       },
 
       removeFilter (activeFilter) {
-        this.activeFilters.$remove(activeFilter)
-        this.$dispatch('filter-changed')
+        let index = this.activeFilters.indexOf(activeFilter)
+        this.activeFilters.splice(index, 1)
+        this.$emit('filter-changed', this.activeFilters)
       },
 
       resetNewFilterData () {
@@ -442,7 +517,7 @@
       },
 
       setNewFilter () {
-        var newFilter = {
+        let newFilter = {
           column: this.columnName,
           operator: this.operatorKey,
           value: this.filterValue
@@ -451,9 +526,9 @@
         if (this.editingFilter === null) {
           this.activeFilters.push(newFilter)
         } else {
-          this.activeFilters.$set(this.editingFilter, newFilter)
+          Vue.set(this.activeFilters, this.editingFilter, newFilter)
         }
-        this.$dispatch('filter-changed', this.activeFilters)
+        this.$emit('filter-changed', this.activeFilters)
         this.resetNewFilterData()
       },
 
@@ -539,6 +614,7 @@
 
   .vue-filter-control .selectize-control {
     min-width: 200px;
+    margin-top: 7px!important;
   }
 
 </style>

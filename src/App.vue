@@ -126,7 +126,7 @@ export default {
 
   methods: {
     refreshData (e) {
-      alert('filter-changed event fired. Data passed:\n' + JSON.stringify(e))
+      console.log('filter-changed event fired. Data passed:\n' + JSON.stringify(e))
     }
   }
 }

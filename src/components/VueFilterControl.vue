@@ -6,10 +6,11 @@
         <a v-for="(activeFilter, key) in activeFilters"
            v-bind:key="activeFilter.id"
            class="filter-box"
-           v-on:click="editFilter(key)"
-           aria-label="Edit"
         >
-          <span class="filter-text">
+          <span class="filter-text clickable"
+                v-on:click="editFilter(key)"
+                aria-label="Edit"
+          >
           {{ getColumnDisplayName(activeFilter.column) }}
           {{ getOperatorDisplayText(activeFilter.column, activeFilter.operator) }}
           {{ getFilterValueDisplayText(activeFilter.column, activeFilter.value) }}
@@ -32,7 +33,7 @@
         {{ getText('add_filter') }}
       </a></p>
     </div>
-    <div v-show="newFilter"
+    <div v-if="newFilter"
          class="add-new-filter form-inline">
       <div class="form-group">
         <label class="sr-only">{{ getText('column') }}</label>
@@ -379,7 +380,8 @@
         this.showOperatorOptions = true
         this.operatorSelected(false)
         this.$nextTick(function () {
-          // can this be moved out of next tick? Was it just here for code that has now been removed
+          // this code is in next tick in case the filter selection is a dropdown list whose contents are dependent
+          // on the operator selected
           this.filterValue = this.activeFilters[filterKey].value
         })
       },
@@ -528,8 +530,8 @@
         } else {
           Vue.set(this.activeFilters, this.editingFilter, newFilter)
         }
-        this.$emit('filter-changed', this.activeFilters)
         this.resetNewFilterData()
+        this.$emit('filter-changed', this.activeFilters)
       },
 
       getText (id) {

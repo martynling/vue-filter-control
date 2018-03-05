@@ -1,13 +1,13 @@
 # vue-filter-control
 Vue.js UI component that allows users to define multiple filters that can then be used to filter data.
 
-This filter control does not re-query your data for you, but provides a control for users to easily set filters. Whenever the filter changes, a filter-change event is fired and the bound data is synced, so that you can refresh your data based upon the latest filters. 
+This filter control does not re-query your data for you, but provides a control for users to easily set filters. Whenever the filter changes, a filter-change event is fired passing the latest set of filters, so that you can refresh/re-query your data. 
 
 # Requirements
 
 - Vue.js ^`2.0.0`
 - vue2-selectize
-- jquery `"^3.3.1"` (vue-selectize is dependent on selectize which is dependent on jquery. We require v3 of jquery since v2 has security vulnerabilities) 
+- jquery `"^3.3.1"` (We require v3 of jquery since v2 has security vulnerabilities) 
 
 
 # Installation
@@ -27,10 +27,14 @@ You may also need to add the following to the devDependencies of a Laravel proje
 ``` bash
 # install dependencies
 npm install
-
+```
+Simple demo available at localhost:8080/demo:
+``` bash
 # serve with hot reload at localhost:8080
 npm run dev
+```
 
+``` bash
 # build for production with minification
 npm run build
 

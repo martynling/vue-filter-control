@@ -10,4 +10,3 @@ new Vue({
   el: '#vue-app',
   components: { App }
 })
-

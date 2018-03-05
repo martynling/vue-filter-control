@@ -4,10 +4,10 @@
   "description": "Vue.js UI component that allows users to define multiple filters that can then be used to filter data",
   "main": "./index.js",
   "scripts": {
-    "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o demo/build.js",
+    "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o dist/build.js",
     "serve": "http-server -c 1 -a localhost",
     "dev": "npm-run-all --parallel watchify serve",
-    "build": "cross-env NODE_ENV=production browserify -e src/main.js | uglifyjs -c warnings=false -m > demo/build.js",
+    "build": "cross-env NODE_ENV=production browserify -e src/main.js | uglifyjs -c warnings=false -m > dist/build.js",
     "lint": "eslint --ext .js,.vue src test/unit",
     "test": "karma start karma.conf.js"
   },

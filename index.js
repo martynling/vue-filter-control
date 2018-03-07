@@ -1,3 +1,3 @@
-import VueFilterControl from './src/components/VueFilterControl.vue'
+import VueFilterControl from "./src/components/VueFilterControl.vue"
 
 module.exports = VueFilterControl

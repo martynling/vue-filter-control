@@ -139,7 +139,7 @@
           {{ getText('set_filter') }}
         </button>
         <button v-on:click="cancelNewFilter"
-                class="btn btn-sm"
+                class="btn btn-sm btn-default"
         >
           {{ getText('cancel') }}
         </button>

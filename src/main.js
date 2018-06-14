@@ -1,12 +1,13 @@
-import Vue from 'vue/dist/vue.js'
-import App from './App.vue'
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from 'vue'
+import App from './App'
 
-window.Vue = Vue
-
-window.$ = window.jQuery = require('jquery')
+Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#vue-app',
-  components: { App }
+  el: '#app',
+  components: { App },
+  template: '<App/>'
 })

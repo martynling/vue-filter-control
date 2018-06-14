@@ -1,11 +1,12 @@
 <template>
   <div id="app">
+    <img src="./assets/logo.png">
     <h1>Vue Filter Control Dev</h1>
     <vue-filter-control
-        @filter-changed="refreshData"
-        :columns="columns"
-        :active-filters="myFilters"
-        :opt-groups="optGroups"
+            @filter-changed="refreshData"
+            :columns="columns"
+            :active-filters="myFilters"
+            :opt-groups="optGroups"
     >
     </vue-filter-control>
     <div class="data-display">
@@ -16,11 +17,12 @@
 </template>
 
 <script>
-import VueFilterControl from './components/VueFilterControl.vue'
+import VueFilterControl from './components/vue-filter-control'
 
 export default {
+  name: 'App',
   components: {
-    'vue-filter-control': VueFilterControl
+    VueFilterControl
   },
   data: function () {
     return {
@@ -61,9 +63,9 @@ export default {
           displayName: 'Role',
           dataType: 'choice',
           options: [
-              {key: 1, value: 'Admin'},
-              {key: 2, value: 'Owner'},
-              {key: 3, value: 'Quality Control'}
+            {key: 1, value: 'Admin'},
+            {key: 2, value: 'Owner'},
+            {key: 3, value: 'Quality Control'}
           ],
           hidden: true,
           optGroup: 'user'
@@ -105,7 +107,7 @@ export default {
           expandableFrom: 20,
           optGroup: 'user'
         }, {
-          name: 'item_id',
+          name: 'id',
           displayName: '#',
           dataType: 'number',
           optGroup: 'item'
@@ -126,17 +128,26 @@ export default {
 
   methods: {
     refreshData (e) {
-      console.log('filter-changed event fired. Data passed:\n' + JSON.stringify(e))
+      alert('filter-changed event fired. Data passed:\n' + JSON.stringify(e))
     }
   }
 }
 </script>
 
 <style>
-body {
-  font-family: Helvetica, sans-serif;
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
-  .data-display {
-    clear: left;
-  }
+.vue-filter-control {
+  text-align: left;
+}
+.data-display {
+  clear: left;
+  text-align: left;
+}
 </style>

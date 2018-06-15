@@ -2,27 +2,14 @@
   <div class="vue-filter-control">
     <div class="filter-display">
       <p>{{ getText('filter_label') }}</p>
-      <div class="active-filters">
-        <div v-for="(activeFilter, key) in activeFilters"
-             v-bind:key="activeFilter.id"
-             class="filter-box"
-        >
-          <a class="filter-text clickable"
-                v-on:click="editFilter(key)"
-                aria-label="Edit"
-          >
-          {{ getColumnDisplayName(activeFilter.column) }}
-          {{ getOperatorDisplayText(activeFilter.column, activeFilter.operator) }}
-          {{ getFilterValueDisplayText(activeFilter.column, activeFilter.value) }}
-          </a>
-          <button class="filter-remove"
-                  v-on:click="removeFilter(activeFilter)"
-                  aria-hidden="true"
-                  aria-label="Remove">
-            <span class="glyphicon glyphicon-remove"></span>
-          </button>
-        </div>
-      </div>
+      <ul class="active-filters">
+        <vue-filter-list-item v-for="(activeFilter) in activeFilters"
+                              v-bind:key="activeFilter.id"
+                              v-bind:filter=activeFilter
+                              v-on:filter-removed="removeFilter"
+                              v-on:filter-edited="editFilter"
+        ></vue-filter-list-item>
+      </ul>
       <p><a class="add-filter clickable"
             v-show="!newFilter"
             v-on:click="addNewFilter"
@@ -151,10 +138,12 @@
 <script type="text/babel">
 import Vue from 'vue'
 import Selectize from 'vue2-selectize'
+import VueFilterListItem from './vue-filter-list-item'
 
 /* global Modernizr */
 export default {
   components: {
+    VueFilterListItem,
     Selectize
   },
   props: {

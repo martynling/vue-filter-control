@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import VueFilterControl from '@/components/vue-filter-control'
-import { shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import sinon from 'sinon'
 
 const factory = () => {
-  return shallowMount(VueFilterControl, {
+  return mount(VueFilterControl, {
     propsData: {
       columns: [{
         name: 'id',
@@ -33,7 +33,7 @@ const factory = () => {
 }
 
 const factoryWithOptGroups = () => {
-  return shallowMount(VueFilterControl, {
+  return mount(VueFilterControl, {
     propsData: {
       columns: [{
         name: 'id',

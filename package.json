@@ -15,7 +15,6 @@
     "unit": "jest --config test/unit/jest.conf.js --coverage --watchAll",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit",
-    "build": "node build/build.js",
     "build": "npm run build:umd & npm run build:es & npm run build:unpkg",
     "build:umd": "rollup --config build/rollup.config.js --format umd --file dist/vue-filter-control.umd.js",
     "build:es": "rollup --config build/rollup.config.js --format es --file dist/vue-filter-control.esm.js",
@@ -27,7 +26,7 @@
     "vue2-selectize": "^1.1.4"
   },
   "devDependencies": {
-    "@vue/test-utils": "^1.0.0-beta.18",
+    "@vue/test-utils": "^1.0.0-beta.19",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",

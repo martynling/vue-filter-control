@@ -33,7 +33,7 @@
             {{ getText('select_column') }}
           </option>
           <option v-for="column in filterableColumns"
-                  v-bind:key="column.id"
+                  v-bind:key="column.name"
                   v-bind:value="column.name"
           >
             {{ column.displayName }}
@@ -136,9 +136,9 @@
 </template>
 
 <script type="text/babel">
-import Vue from 'vue'
 import Selectize from 'vue2-selectize'
 import VueFilterListItem from './vue-filter-list-item.vue'
+import { DataTypeOperators } from './operator.js'
 
 /* global Modernizr */
 export default {
@@ -276,16 +276,11 @@ export default {
     },
 
     operatorOptions () {
-      let column = this.getColumn(this.columnName)
-      return column ? this.getOperatorsForDataType(column) : {}
+      return this.column ? this.getOperatorsForColumn(this.column) : {}
     },
 
     filterValueOptions () {
-      if (this.columnName) {
-        let column = this.getColumn(this.columnName)
-        if (column) return column.options
-      }
-      return {}
+      return this.column ? this.column.options : {}
     },
 
     filterableColumns () {
@@ -309,19 +304,15 @@ export default {
       this.dateQuery = false
       this.selectQuery = false
 
-      if (!this.columnName || !this.getColumn(this.columnName)) {
-        return false
-      }
-      let column = this.getColumn(this.columnName)
-      if (column.maxItems) {
-        let operator = this.getOperatorFromColumnAndKey(column, this.operatorKey)
-        if (operator && operator.multiValue) this.selectizeSettings.maxItems = column.maxItems
+      if (this.column.maxItems) {
+        let operator = this.getOperatorFromColumnAndKey(this.column, this.operatorKey)
+        if (operator && operator.multiSelect) this.selectizeSettings.maxItems = this.column.maxItems
         else this.selectizeSettings.maxItems = 1
       } else {
         this.selectizeSettings.maxItems = 1
       }
 
-      switch (column.dataType) {
+      switch (this.column.dataType) {
         case 'string':
           this.freetextQuery = true
           break
@@ -351,7 +342,7 @@ export default {
     },
 
     columnSelected () {
-      this.column = this.getColumn(this.columnName)
+      this.column = this.getColumn(this.columnName) // this.columnName is bound to the column select
       this.operatorKey = ''
       this.filterValue = ''
       this.showFilterValueInput = false // Unload existing input(s)
@@ -365,27 +356,22 @@ export default {
     editFilter (filterKey) {
       this.editingFilter = filterKey
       this.newFilter = true
-      this.columnName = this.activeFilters[filterKey].column
-      this.operatorKey = this.activeFilters[filterKey].operator
+      this.column = filterKey.column
+      this.columnName = this.column.name
+      this.operatorKey = filterKey.operator
       this.showOperatorOptions = true
       this.operatorSelected(false)
       this.$nextTick(function () {
         // this code is in next tick in case the filter selection is a dropdown list whose contents are dependent
         // on the operator selected
-        this.filterValue = this.activeFilters[filterKey].value
+        this.filterValue = filterKey.value
       })
     },
 
     getColumn (columnName) {
-      for (let i = 0; i < this.columns.length; i++) {
-        if (this.columns[i].name === columnName) return this.columns[i]
-      }
-      return null
-    },
-
-    getColumnDisplayName (columnName) {
-      let column = this.getColumn(columnName)
-      return column ? column.displayName : this.getText('column_missing')
+      return this.columns.find(function (column) {
+        return column.name === columnName
+      })
     },
 
     getFilterableOptGroupColumns (optGroup) {
@@ -394,10 +380,9 @@ export default {
       })
     },
 
-    getFilterValueDisplayText (columnName, filterValue) {
-      let column = this.getColumn(columnName)
+    getFilterValueDisplayText (column, filterValue) {
       let option = null
-      if (!column.hasOwnProperty('maxItems') || column.maxItems === 1) {
+      if (column.maxItems === 1) {
         option = this.getSelectedOptionFromColumnAndKey(column, filterValue)
       } else { // array of keys
         let optValues = []
@@ -412,8 +397,7 @@ export default {
       return option ? option.value : filterValue
     },
 
-    getOperatorDisplayText (columnName, key) {
-      let column = this.getColumn(columnName)
+    getOperatorDisplayText (column, key) {
       if (column) {
         let operator = this.getOperatorFromColumnAndKey(column, key)
         return operator ? operator.displayText : this.getText('operator_missing')
@@ -422,60 +406,32 @@ export default {
     },
 
     getOperatorFromColumnAndKey (column, key) {
-      let operators = this.getOperatorsForDataType(column)
+      let operators = this.getOperatorsForColumn(column)
       return operators ? operators[key] : null
     },
 
-    getOperatorsForDataType (column) {
-      switch (column.dataType) {
-        case 'boolean':
-          return {
-            '=': {displayText: this.getText('equals')},
-            '!=': {displayText: this.getText('not_equals')}
-          }
-        case 'string':
-          return {
-            '=': {displayText: this.getText('equals')},
-            'begins': {displayText: this.getText('begins_with')},
-            'contains': {displayText: this.getText('contains')}
-          }
-        case 'number':
-          return {
-            '=': {displayText: this.getText('equals')},
-            '<': {displayText: this.getText('less_than')},
-            '<=': {displayText: this.getText('less_than_or_equals')},
-            '>': {displayText: this.getText('greater_than')},
-            '>=': {displayText: this.getText('greater_than_or_equals')}
-          }
-        case 'date':
-        case 'datetime':
-          return {
-            '=': {displayText: this.getText('equals')},
-            '<': {displayText: this.getText('before')},
-            '<=': {displayText: this.getText('before_or_on')},
-            '>': {displayText: this.getText('after')},
-            '>=': {displayText: this.getText('after_or_on')}
-          }
-        case 'choice':
-          let msOptions = {
-            '=': {displayText: this.getText('equals'), multiValue: false}
-          }
-          if (column.maxItems && column.maxItems > 1) {
-            msOptions['in'] = {displayText: this.getText('is_one_of'), multiValue: true}
-          }
-          return msOptions
-      }
-      return {}
+    getOperatorsForColumn (column) {
+      let operators = DataTypeOperators[column.dataType]
+      if (!operators || !operators.length) return {}
+
+      // Remove any operators that are not relevant to the column
+      let relevantOperators = operators.filter(function (operator) {
+        // multiSelect operators are not relevant if the column only allows one item to be selected
+        return !(column.dataType === 'choice' && operator.multiSelect && column.maxItems === 1)
+      })
+
+      // Reformat the array into key => item structure
+      return relevantOperators.reduce((obj, item) => {
+        obj[item.key] = item
+        return obj
+      }, {})
     },
 
     getSelectedOptionFromColumnAndKey (column, optionKey) {
-      let options = column.options
-      if (options) {
-        for (let i = 0; i < options.length; i++) {
-          if (options[i].key == optionKey) { // eslint-disable-line eqeqeq
-            return options[i]
-          }
-        }
+      if (column.options) {
+        return column.options.find(function (option) {
+          return option.key == optionKey // eslint-disable-line eqeqeq
+        })
       }
       return null
     },
@@ -510,7 +466,7 @@ export default {
 
     setNewFilter () {
       let newFilter = {
-        column: this.columnName,
+        column: this.column,
         operator: this.operatorKey,
         value: this.filterValue
       }
@@ -518,7 +474,8 @@ export default {
       if (this.editingFilter === null) {
         this.activeFilters.push(newFilter)
       } else {
-        Vue.set(this.activeFilters, this.editingFilter, newFilter)
+        let index = this.activeFilters.indexOf(this.editingFilter)
+        this.activeFilters.splice(index, 1, newFilter)
       }
       this.resetNewFilterData()
       this.$emit('filter-changed', this.activeFilters)
@@ -563,5 +520,4 @@ export default {
     min-width: 200px;
     margin-top: 7px!important;
   }
-
 </style>

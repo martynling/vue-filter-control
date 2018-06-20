@@ -2,28 +2,6 @@
 
 > Vue.js UI component that allows users to define multiple filters that can then be used to filter data
 
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run all tests
-npm test
-```
-
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 # Changes between v2.0 and v3.0
@@ -31,6 +9,8 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 The 3.0 branch offers significant accessibility (#a11y) improvements to make `vue-filter-control` work better for Assistive Technology users.
 
 In making `vue-filter-control` more accessible, the HTML structure of the component has been changed, which means that any custom CSS that worked with previous versions will need to be adapted to work with the 3.0 branch. However, the HTML structure is now much simpler and follows semantic norms, which should make styling the component much simpler.
+
+`multiValue` for `choice` dataType renamed to `multiSelect`
 
 # Changes between v1.0 and v2.0
 
@@ -165,3 +145,24 @@ If you want columns to be grouped into options groups, you define the option gro
 
  - `filter-changed` - whenever a change to the filters is set in the filter control, a filter-changed event occurs which passes the complete set of filters. Note: in the latest version, active-filters is no longer bound 2 ways so you'll need to sync your activeFilters.  
  
+ ## Build Setup
+ 
+ ``` bash
+ # install dependencies
+ npm install
+ 
+ # serve with hot reload at localhost:8080
+ npm run dev
+ 
+ # build for production with minification
+ npm run build
+ 
+ # build for production and view the bundle analyzer report
+ npm run build --report
+ 
+ # run unit tests
+ npm run unit
+ 
+ # run all tests
+ npm test
+ ```

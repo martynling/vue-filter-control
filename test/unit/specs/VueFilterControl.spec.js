@@ -72,7 +72,7 @@ describe('VueFilterControl', () => {
   it('should render correct contents', () => {
     let wrapper = factory()
 
-    expect(wrapper.find('.vue-filter-control .filter-display > p').text()).toEqual('Filter:')
+    expect(wrapper.find('.vue-filter-control .filter-display > p').text()).toEqual('Filter by:')
   })
 
   it('should render passed in activeFilters', () => {
@@ -145,11 +145,9 @@ describe('VueFilterControl', () => {
     let filterChangedEvent = wrapper.emitted()['filter-changed']
     expect(filterChangedEvent).toBeTruthy()
     expect(filterChangedEvent[0][0].length).toEqual(3)
-    expect(filterChangedEvent[0][0][2]).toEqual({
-      column: 'price',
-      operator: '=',
-      value: '12'
-    })
+    expect(filterChangedEvent[0][0][2].column.name).toEqual('price')
+    expect(filterChangedEvent[0][0][2].operator).toEqual('=')
+    expect(filterChangedEvent[0][0][2].value).toEqual('12')
   })
 
   it('can add a new filter using optgroups which should emit filterChanged', async () => {
@@ -186,11 +184,9 @@ describe('VueFilterControl', () => {
     let filterChangedEvent = wrapper.emitted()['filter-changed']
     expect(filterChangedEvent).toBeTruthy()
     expect(filterChangedEvent[0][0].length).toEqual(3)
-    expect(filterChangedEvent[0][0][2]).toEqual({
-      column: 'price',
-      operator: '=',
-      value: '12'
-    })
+    expect(filterChangedEvent[0][0][2].column.name).toEqual('price')
+    expect(filterChangedEvent[0][0][2].operator).toEqual('=')
+    expect(filterChangedEvent[0][0][2].value).toEqual('12')
   })
 
 })

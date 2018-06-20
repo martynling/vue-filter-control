@@ -1,6 +1,6 @@
 <template>
     <li class="filter-box">
-        <span id="sr-list-description" class="sr-only">{{ filterText }}</span>
+        <span id="sr-list-description" class="screen-reader-only">{{ filterText }}</span>
         <button class="filter-text"
            v-on:click="editFilter(filter)"
            :aria-label=editFilterText
@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     filterText () {
-      return `${this.getColumnDisplayName(this.filter.column)} ${this.getOperatorDisplayText(this.filter.column, this.filter.operator)} ${this.getFilterValueDisplayText(this.filter.column, this.filter.value)}`
+      return `${this.filter.column.displayName} ${this.getOperatorDisplayText(this.filter.column, this.filter.operator)} ${this.getFilterValueDisplayText(this.filter.column, this.filter.value)}`
     },
     editFilterText () {
       return `Edit filter '${this.filterText}'`
@@ -39,16 +39,12 @@ export default {
       this.$emit('filter-edited', filter)
     },
 
-    getColumnDisplayName (columnName) {
-      return this.$parent.getColumnDisplayName(columnName)
+    getOperatorDisplayText (column, key) {
+      return this.$parent.getOperatorDisplayText(column, key)
     },
 
-    getOperatorDisplayText (columnName, key) {
-      return this.$parent.getOperatorDisplayText(columnName, key)
-    },
-
-    getFilterValueDisplayText (columnName, filterValue) {
-      return this.$parent.getFilterValueDisplayText(columnName, filterValue)
+    getFilterValueDisplayText (column, filterValue) {
+      return this.$parent.getFilterValueDisplayText(column, filterValue)
     },
 
     removeFilter (filter) {
@@ -59,6 +55,16 @@ export default {
 </script>
 
 <style scoped>
+    .screen-reader-only {
+        position: absolute;
+        height: 1px;
+        width: 1px;
+        clip: rect(1px,1px,1px,1px);
+        clip-path: polygon(0px 0px, 0px 0px, 0px 0px);
+        -webkit-clip-path: polygon(0px 0px, 0px 0px, 0px 0px);
+        overflow: hidden !important;
+    }
+
     .filter-box {
         color: #fff;
         height: 30px;

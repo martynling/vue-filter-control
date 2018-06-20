@@ -18,6 +18,7 @@
 
 <script>
 import VueFilterControl from './components/vue-filter-control'
+import Column from './components/column.js'
 
 export default {
   name: 'App',
@@ -38,27 +39,31 @@ export default {
   computed: {
     columns () {
       return [
-        {
+        new Column({
           name: 'id',
           displayName: '#',
           dataType: 'number',
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'email',
           displayName: 'Email',
           dataType: 'string',
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'first_name',
           displayName: 'First Name',
           dataType: 'string',
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'last_name',
           displayName: 'Last Name',
           dataType: 'string',
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'role_id',
           displayName: 'Role',
           dataType: 'choice',
@@ -69,7 +74,8 @@ export default {
           ],
           hidden: true,
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'music_id',
           displayName: 'Favourite Music',
           dataType: 'choice',
@@ -83,22 +89,26 @@ export default {
           maxItems: 3,
           hidden: true,
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'roleTitle',
           displayName: 'Role',
           dataType: 'string',
           notFilterable: true
-        }, {
+        }),
+        new Column({
           name: 'joined',
           displayName: 'Joined',
           dataType: 'date',
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'last_login',
           displayName: 'Last logged in',
           dataType: 'datetime',
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'notes',
           displayName: 'Notes',
           dataType: 'string',
@@ -106,22 +116,25 @@ export default {
           expandable: true,
           expandableFrom: 20,
           optGroup: 'user'
-        }, {
+        }),
+        new Column({
           name: 'id',
           displayName: '#',
           dataType: 'number',
           optGroup: 'item'
-        }, {
+        }),
+        new Column({
           name: 'name',
           displayName: 'Name',
           dataType: 'string',
           optGroup: 'item'
-        }, {
+        }),
+        new Column({
           name: 'price',
           displayName: 'Price',
           dataType: 'number',
           optGroup: 'item'
-        }
+        })
       ]
     }
   },

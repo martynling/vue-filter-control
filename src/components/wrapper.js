@@ -1,5 +1,6 @@
 // Import vue component
 import component from './vue-filter-control.vue';
+import ColumnDefinition from './column.js'
 
 // Declare install function executed by Vue.use()
 export function install(Vue) {
@@ -25,4 +26,8 @@ if (GlobalVue) {
 }
 
 // To allow use as module (npm/webpack/etc.) export component
-export default component;
+const VueFilterControl = component;
+export {
+  ColumnDefinition,
+  VueFilterControl
+}

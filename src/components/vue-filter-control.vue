@@ -138,13 +138,13 @@
 <script type="text/babel">
 import Vue from 'vue'
 import Selectize from 'vue2-selectize'
-import VueFilterListItem from './vue-filter-list-item'
+import VueFilterListItem from './vue-filter-list-item.vue'
 
 /* global Modernizr */
 export default {
   components: {
-    VueFilterListItem,
-    Selectize
+    Selectize,
+    VueFilterListItem
   },
   props: {
     activeFilters: {
@@ -186,7 +186,7 @@ export default {
       },
       locales: {
         en: {
-          filter_label: 'Filter:',
+          filter_label: 'Filter by:',
           add_filter: 'Add Filter',
           column: 'Column',
           operator: 'Operator',
@@ -213,7 +213,7 @@ export default {
           operator_missing: '-- Operator Missing --'
         },
         fr: {
-          filter_label: 'Filtre :',
+          filter_label: 'Filtre par:',
           add_filter: 'Ajouter un filtre',
           column: 'Colonne',
           operator: 'Opérateur',
@@ -240,7 +240,7 @@ export default {
           operator_missing: '-- Opérateur absent --'
         },
         pt: {
-          filter_label: 'Filtro:',
+          filter_label: 'Filtro por:',
           add_filter: 'Adicionar Filtro',
           column: 'Coluna',
           operator: 'Operador',
@@ -534,7 +534,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .vue-filter-control {
     font-size: 14px;
   }
@@ -545,58 +545,13 @@ export default {
 
   .vue-filter-control .active-filters {
     float: left;
-    margin-left: 2px;
+    margin-left: 4px;
     margin-top: -4px;
-  }
-
-  .vue-filter-control .active-filters > .filter-box {
-    padding-right: 30px;
-    color: #fff;
-    height: 30px;
-    line-height: 30px;
-    overflow: hidden;
-    position: relative;
-    text-decoration: none;
-    border-radius: 3px;
-    background: #337ab7;
-    margin: 0 4px 0 0;
-    display: inline-block;
-  }
-
-  .vue-filter-control .active-filters > .filter-box > a.filter-text {
-    color: darken(#fff, 5%);
-    padding: 0 8px;
-    text-decoration: none;
-    height: 18px;
-    line-height: 18px;
-    display: inline-block;
-  }
-
-  .vue-filter-control .active-filters > .filter-box > a.filter-text:hover {
-    padding: 0 8px;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .vue-filter-control .active-filters > .filter-box > .filter-remove {
-    padding: 0 8px 0;
-    background: lighten(#337ab7, 5%);
-    color: darken(#fff, 5%);
-    border-radius: 0 3px 3px 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    cursor: pointer;
-  }
-
-  .vue-filter-control .active-filters > .filter-box > .filter-remove:hover {
-    color: #fff;
-    background: lighten(#337ab7, 10%);
-    text-decoration: none;
+    padding-left: 0;
   }
 
   .vue-filter-control .filter-display .add-filter {
-    margin-left: 2px;
+    margin-left: 4px;
   }
 
   .vue-filter-control .add-new-filter {

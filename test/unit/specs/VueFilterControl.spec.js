@@ -165,7 +165,7 @@ describe('VueFilterControl', () => {
     let options = wrapper.find('.select-column').findAll('option')
     options.at(3).setSelected()
 
-/*    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick()
     expect(wrapper.vm.$data.columnName).toEqual('price')
 
     expect(wrapper.find('.select-operator').isVisible()).toBe(true)
@@ -190,7 +190,7 @@ describe('VueFilterControl', () => {
       column: 'price',
       operator: '=',
       value: '12'
-    }) */
+    })
   })
 
 })

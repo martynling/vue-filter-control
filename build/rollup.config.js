@@ -5,7 +5,15 @@ export default {
   output: {
     name: 'VueFilterControl',
     exports: 'named',
+    globals: {
+      vue: 'Vue',
+      'vue2-selectize': 'Selectize'
+    }
   },
+  external: [
+    'vue',
+    'vue2-selectize'
+  ],
   plugins: [
     vue({
       css: true, // Dynamically inject css as a <style> tag

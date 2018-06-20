@@ -1,7 +1,7 @@
 {
   "name": "vue-filter-control",
-  "version": "2.0.0",
-  "description": "Vue.js UI component that allows users to define multiple filters that can then be used to filter data",
+  "version": "3.0.0",
+  "description": "Vue.js UI component that allows users to define multiple filters that can then be used to filter data. The version 3.0 branch is a refactor to provide improved accessibility (#a11y).",
   "author": "Martyn Ling <mling@str8-4ward.com>",
   "main": "dist/vue-filter-control.umd.js",
   "module": "dist/vue-filter-control.esm.js",
@@ -20,7 +20,7 @@
     "build:es": "rollup --config build/rollup.config.js --format es --file dist/vue-filter-control.esm.js",
     "build:unpkg": "rollup --config build/rollup.config.js --format iife --file dist/vue-filter-control.min.js"
   },
-  "dependencies": {
+  "peerDependencies": {
     "jquery": "~3.3.1",
     "vue": "^2.5.2",
     "vue2-selectize": "^1.1.4"

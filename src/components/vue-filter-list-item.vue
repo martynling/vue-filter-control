@@ -1,17 +1,15 @@
 <template>
     <li class="filter-box">
+        <span id="sr-list-description" class="sr-only">{{ filterText }}</span>
         <button class="filter-text"
            v-on:click="editFilter(filter)"
-           aria-label="Edit"
+           :aria-label=editFilterText
         >
-            {{ getColumnDisplayName(filter.column) }}
-            {{ getOperatorDisplayText(filter.column, filter.operator) }}
-            {{ getFilterValueDisplayText(filter.column, filter.value) }}
+            {{ filterText }}
         </button>
         <button class="filter-remove"
                 v-on:click="removeFilter(filter)"
-                aria-hidden="true"
-                aria-label="Remove">
+                :aria-label=removeFilterText>
             <span class="glyphicon glyphicon-remove"></span>
         </button>
     </li>
@@ -23,6 +21,17 @@ export default {
   props: {
     filter: {
       type: Object
+    }
+  },
+  computed: {
+    filterText () {
+      return `${this.getColumnDisplayName(this.filter.column)} ${this.getOperatorDisplayText(this.filter.column, this.filter.operator)} ${this.getFilterValueDisplayText(this.filter.column, this.filter.value)}`
+    },
+    editFilterText () {
+      return `Edit filter '${this.filterText}'`
+    },
+    removeFilterText () {
+      return `Remove filter '${this.filterText}'`
     }
   },
   methods: {
@@ -50,5 +59,44 @@ export default {
 </script>
 
 <style scoped>
+    .filter-box {
+        color: #fff;
+        height: 30px;
+        line-height: 30px;
+        overflow: hidden;
+        position: relative;
+        text-decoration: none;
+        border-radius: 3px;
+        background: #337ab7;
+        display: inline-block;
+        margin-right: 4px;
+    }
 
+    .filter-box > .filter-text {
+        background: #337ab7;
+        padding: 0 8px 0;
+        text-decoration: none;
+        border: none;
+    }
+
+    .filter-box > .filter-text:hover {
+        background: #000;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .filter-box > .filter-remove {
+        padding: 1px 8px 0;
+        margin-left: -4px;
+        background: #337ab7;
+        border: none;
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+    }
+
+    .filter-box > .filter-remove:hover {
+        color: #fff;
+        background: #000;
+        text-decoration: none;
+    }
 </style>

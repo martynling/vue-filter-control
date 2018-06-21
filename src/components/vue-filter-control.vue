@@ -305,8 +305,7 @@ export default {
       this.selectQuery = false
 
       if (this.column.maxItems) {
-        let operator = this.getOperatorFromColumnAndKey(this.column, this.operatorKey)
-        if (operator && operator.multiSelect) this.selectizeSettings.maxItems = this.column.maxItems
+        if (this.operator && this.operator.multiSelect) this.selectizeSettings.maxItems = this.column.maxItems
         else this.selectizeSettings.maxItems = 1
       } else {
         this.selectizeSettings.maxItems = 1
@@ -358,7 +357,8 @@ export default {
       this.newFilter = true
       this.column = filterKey.column
       this.columnName = this.column.name
-      this.operatorKey = filterKey.operator
+      this.operator = filterKey.operator
+      this.operatorKey = this.operator.key // Bound to operator input
       this.showOperatorOptions = true
       this.operatorSelected(false)
       this.$nextTick(function () {
@@ -437,6 +437,7 @@ export default {
     },
 
     operatorSelected (resetValue = true) {
+      this.operator = this.getOperatorFromColumnAndKey(this.column, this.operatorKey)
       this.showFilterValueInput = false // Force a reload of input based on operator
       if (resetValue) this.filterValue = ''
       this.activateFilterValueInput()
@@ -467,7 +468,7 @@ export default {
     setNewFilter () {
       let newFilter = {
         column: this.column,
-        operator: this.operatorKey,
+        operator: this.operator,
         value: this.filterValue
       }
 

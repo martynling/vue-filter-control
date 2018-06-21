@@ -146,7 +146,7 @@ describe('VueFilterControl', () => {
     expect(filterChangedEvent).toBeTruthy()
     expect(filterChangedEvent[0][0].length).toEqual(3)
     expect(filterChangedEvent[0][0][2].column.name).toEqual('price')
-    expect(filterChangedEvent[0][0][2].operator).toEqual('=')
+    expect(filterChangedEvent[0][0][2].operator.key).toEqual('=')
     expect(filterChangedEvent[0][0][2].value).toEqual('12')
   })
 
@@ -185,7 +185,7 @@ describe('VueFilterControl', () => {
     expect(filterChangedEvent).toBeTruthy()
     expect(filterChangedEvent[0][0].length).toEqual(3)
     expect(filterChangedEvent[0][0][2].column.name).toEqual('price')
-    expect(filterChangedEvent[0][0][2].operator).toEqual('=')
+    expect(filterChangedEvent[0][0][2].operator.key).toEqual('=')
     expect(filterChangedEvent[0][0][2].value).toEqual('12')
   })
 

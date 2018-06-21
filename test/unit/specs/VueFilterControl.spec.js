@@ -1,32 +1,60 @@
 import Vue from 'vue'
 import VueFilterControl from '@/components/vue-filter-control'
+import Column from '@/components/column.js'
+import { OperatorDefinition } from '@/components/operator.js'
+
 import { mount } from '@vue/test-utils'
 import sinon from 'sinon'
+
+function columnId (withOptGroup = true) {
+  return new Column({
+    name: 'id',
+    displayName: '#',
+    dataType: 'number',
+    optGroup: withOptGroup ? 'user' : null
+  })
+}
+
+function columnEmail (withOptGroup = true) {
+  return new Column({
+    name: 'email',
+    displayName: 'Email',
+    dataType: 'string',
+    optGroup: withOptGroup ? 'user' : null
+  })
+}
+
+function columnPrice (withOptGroup = true) {
+  return new Column({
+    name: 'price',
+    displayName: 'Price',
+    dataType: 'number',
+    optGroup: withOptGroup ? 'item' : null
+  })
+}
+
+const operatorEquals = new OperatorDefinition({ key: '=' })
+const operatorContains = new OperatorDefinition({ key: 'contains' })
+
+const valueId = { key: '12', value: '12'}
+const valueEmail = { key: 'wibble', value: 'wibble'}
 
 const factory = () => {
   return mount(VueFilterControl, {
     propsData: {
-      columns: [{
-        name: 'id',
-        displayName: '#',
-        dataType: 'number'
-      }, {
-        name: 'email',
-        displayName: 'Email',
-        dataType: 'string'
-      }, {
-        name: 'price',
-        displayName: 'Price',
-        dataType: 'number'
-      }],
+      columns: [
+        columnId(false),
+        columnEmail(false),
+        columnPrice(false)
+      ],
       'active-filters': [{
-        column: 'id',
-        operator: '=',
-        value: '1'
+        column: columnId(false),
+        operator: operatorEquals,
+        value: valueId
       }, {
-        column: 'email',
-        operator: 'contains',
-        value: 'wibble'
+        column: columnEmail(false),
+        operator: operatorContains,
+        value: valueEmail
       }]
     }
   })
@@ -35,30 +63,19 @@ const factory = () => {
 const factoryWithOptGroups = () => {
   return mount(VueFilterControl, {
     propsData: {
-      columns: [{
-        name: 'id',
-        displayName: '#',
-        dataType: 'number',
-        optGroup: 'user'
-      }, {
-        name: 'email',
-        displayName: 'Email',
-        dataType: 'string',
-        optGroup: 'user'
-      }, {
-        name: 'price',
-        displayName: 'Price',
-        dataType: 'number',
-        optGroup: 'item'
-      }],
+      columns: [
+        columnId(),
+        columnEmail(),
+        columnPrice()
+      ],
       'active-filters': [{
-        column: 'id',
-        operator: '=',
-        value: '1'
+        column: columnId(),
+        operator: operatorEquals,
+        value: valueId
       }, {
-        column: 'email',
-        operator: 'contains',
-        value: 'wibble'
+        column: columnEmail(),
+        operator: operatorContains,
+        value: valueEmail
       }],
       optGroups: [
         {value: 'user', label: 'User'},
@@ -105,9 +122,9 @@ describe('VueFilterControl', () => {
     expect(filterChangedEvent).toBeTruthy()
     expect(filterChangedEvent[0][0].length).toEqual(1)
     expect(filterChangedEvent[0][0]).toEqual([{
-      column: 'email',
-      operator: 'contains',
-      value: 'wibble'
+      column: columnEmail(false),
+      operator: operatorContains,
+      value: valueEmail
     }])
   })
 
@@ -145,9 +162,9 @@ describe('VueFilterControl', () => {
     let filterChangedEvent = wrapper.emitted()['filter-changed']
     expect(filterChangedEvent).toBeTruthy()
     expect(filterChangedEvent[0][0].length).toEqual(3)
-    expect(filterChangedEvent[0][0][2].column.name).toEqual('price')
-    expect(filterChangedEvent[0][0][2].operator.key).toEqual('=')
-    expect(filterChangedEvent[0][0][2].value).toEqual('12')
+    expect(filterChangedEvent[0][0][2].column).toEqual(columnPrice(false))
+    expect(filterChangedEvent[0][0][2].operator).toEqual(operatorEquals)
+    expect(filterChangedEvent[0][0][2].value).toEqual(valueId)
   })
 
   it('can add a new filter using optgroups which should emit filterChanged', async () => {
@@ -184,9 +201,9 @@ describe('VueFilterControl', () => {
     let filterChangedEvent = wrapper.emitted()['filter-changed']
     expect(filterChangedEvent).toBeTruthy()
     expect(filterChangedEvent[0][0].length).toEqual(3)
-    expect(filterChangedEvent[0][0][2].column.name).toEqual('price')
-    expect(filterChangedEvent[0][0][2].operator.key).toEqual('=')
-    expect(filterChangedEvent[0][0][2].value).toEqual('12')
+    expect(filterChangedEvent[0][0][2].column).toEqual(columnPrice())
+    expect(filterChangedEvent[0][0][2].operator).toEqual(operatorEquals)
+    expect(filterChangedEvent[0][0][2].value).toEqual(valueId)
   })
 
 })

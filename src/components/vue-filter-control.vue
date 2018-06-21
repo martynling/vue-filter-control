@@ -352,19 +352,25 @@ export default {
       this.showOperatorOptions = true
     },
 
-    editFilter (filterKey) {
-      this.editingFilter = filterKey
+    editFilter (filter) {
+      this.editingFilter = filter
       this.newFilter = true
-      this.column = filterKey.column
-      this.columnName = this.column.name
-      this.operator = filterKey.operator
-      this.operatorKey = this.operator.key // Bound to operator input
+      this.column = filter.column
+      this.columnName = this.column.name // Bound to column select
+      this.operator = filter.operator
+      this.operatorKey = this.operator.key // Bound to operator select
       this.showOperatorOptions = true
       this.operatorSelected(false)
       this.$nextTick(function () {
         // this code is in next tick in case the filter selection is a dropdown list whose contents are dependent
         // on the operator selected
-        this.filterValue = filterKey.value
+        if (Array.isArray(filter.value)) {
+          this.filterValue = filter.value.map((item) => {
+            return item.key
+          })
+        } else {
+          this.filterValue = filter.value.key
+        }
       })
     },
 
@@ -380,21 +386,19 @@ export default {
       })
     },
 
-    getFilterValueDisplayText (column, filterValue) {
-      let option = null
+    getFilterValueObject (column, filterValue) {
+      let values = null
       if (column.maxItems === 1) {
-        option = this.getSelectedOptionFromColumnAndKey(column, filterValue)
-      } else { // array of keys
-        let optValues = []
-        option = {}
-        let optionKeys = filterValue
-        for (let i = 0; i < optionKeys.length; i++) {
-          let opt = this.getSelectedOptionFromColumnAndKey(column, optionKeys[i])
-          if (opt) optValues.push(opt.value)
+        values = this.getSelectedOptionFromColumnAndKey(column, filterValue)
+        if (!values) {
+          values = { key: filterValue, value: filterValue }
         }
-        option.value = optValues.join(', ')
+      } else { // array of keys
+        values = filterValue.map(function (item) {
+          return this.getSelectedOptionFromColumnAndKey(column, item)
+        }, this)
       }
-      return option ? option.value : filterValue
+      return values
     },
 
     getOperatorDisplayText (column, key) {
@@ -469,7 +473,7 @@ export default {
       let newFilter = {
         column: this.column,
         operator: this.operator,
-        value: this.filterValue
+        value: this.getFilterValueObject(this.column, this.filterValue)
       }
 
       if (this.editingFilter === null) {

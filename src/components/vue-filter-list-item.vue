@@ -40,7 +40,12 @@ export default {
     },
 
     getFilterValueDisplayText (column, filterValue) {
-      return this.$parent.getFilterValueDisplayText(column, filterValue)
+      if (Array.isArray(filterValue)) {
+        return filterValue.map((item) => {
+          return item.value
+        }).join(', ')
+      }
+      return filterValue.value
     },
 
     removeFilter (filter) {

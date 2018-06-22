@@ -341,7 +341,9 @@ export default {
     },
 
     columnSelected () {
-      this.column = this.getColumn(this.columnName) // this.columnName is bound to the column select
+      this.column = this.columns.find(function (column) {
+        return column.name === this.columnName
+      }, this) // this.columnName is bound to the column select
       this.operatorKey = ''
       this.filterValue = ''
       this.showFilterValueInput = false // Unload existing input(s)
@@ -374,12 +376,6 @@ export default {
       })
     },
 
-    getColumn (columnName) {
-      return this.columns.find(function (column) {
-        return column.name === columnName
-      })
-    },
-
     getFilterableOptGroupColumns (optGroup) {
       return this.columns.filter(function (column) {
         return !column.notFilterable && column.optGroup === optGroup.value
@@ -399,14 +395,6 @@ export default {
         }, this)
       }
       return values
-    },
-
-    getOperatorDisplayText (column, key) {
-      if (column) {
-        let operator = this.getOperatorFromColumnAndKey(column, key)
-        return operator ? operator.displayText : this.getText('operator_missing')
-      }
-      return this.getText('operator_missing')
     },
 
     getOperatorFromColumnAndKey (column, key) {

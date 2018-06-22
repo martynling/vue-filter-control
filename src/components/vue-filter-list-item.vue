@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     filterText () {
-      return `${this.filter.column.displayName} ${this.filter.operator.displayText} ${this.getFilterValueDisplayText(this.filter.column, this.filter.value)}`
+      return `${this.filter.column.displayName} ${this.filter.operator.displayText} ${this.getFilterValueDisplayText(this.filter.value)}`
     },
     editFilterText () {
       return `Edit filter '${this.filterText}'`
@@ -39,7 +39,7 @@ export default {
       this.$emit('filter-edited', filter)
     },
 
-    getFilterValueDisplayText (column, filterValue) {
+    getFilterValueDisplayText (filterValue) {
       if (Array.isArray(filterValue)) {
         return filterValue.map((item) => {
           return item.value

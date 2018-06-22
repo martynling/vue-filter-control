@@ -20,11 +20,6 @@
     "build:es": "rollup --config build/rollup.config.js --format es --file dist/vue-filter-control.esm.js",
     "build:unpkg": "rollup --config build/rollup.config.js --format iife --file dist/vue-filter-control.min.js"
   },
-  "peerDependencies": {
-    "jquery": "~3.3.1",
-    "vue": "^2.5.2",
-    "vue2-selectize": "^1.1.4"
-  },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.19",
     "autoprefixer": "^7.1.2",
@@ -95,5 +90,10 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "dependencies": {
+    "jquery": "~3.3.1",
+    "vue": "^2.5.2",
+    "vue2-selectize": "^1.1.4"
+  }
 }

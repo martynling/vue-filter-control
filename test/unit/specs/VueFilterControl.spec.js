@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import VueFilterControl from '@/components/vue-filter-control'
 import Column from '@/components/column.js'
 import { OperatorDefinition } from '@/components/operator.js'
@@ -33,11 +32,35 @@ function columnPrice (withOptGroup = true) {
   })
 }
 
+function columnFavoriteThings (withOptGroup = true) {
+  return new Column({
+    name: 'things',
+    displayName: 'Things',
+    dataType: 'choice',
+    options: [
+      { key: 1, value: 'Thing 1' },
+      { key: 2, value: 'Thing 2' },
+      { key: 3, value: 'Thing 3' },
+      { key: 4, value: 'Thing 4' },
+      { key: 5, value: 'Thing 5' },
+      { key: 6, value: 'Thing 6' }
+    ],
+    maxItems: 3,
+    optGroup: withOptGroup ? 'item' : null
+  })
+}
+
 const operatorEquals = new OperatorDefinition({ key: '=' })
 const operatorContains = new OperatorDefinition({ key: 'contains' })
+const operatorIsOneOf = new OperatorDefinition({ key: 'in', displayText: 'is_one_of' })
 
 const valueId = { key: '12', value: '12'}
 const valueEmail = { key: 'wibble', value: 'wibble'}
+const valueFavoriteThings = [
+  { key: 1, value: 'Thing 1'},
+  { key: 3, value: 'Thing 3'},
+  { key: 6, value: 'Thing 6'}
+]
 
 const factory = () => {
   return mount(VueFilterControl, {
@@ -48,13 +71,13 @@ const factory = () => {
         columnPrice(false)
       ],
       'active-filters': [{
-        column: columnId(false),
-        operator: operatorEquals,
-        value: valueId
+        column: columnId(false).name,
+        operator: operatorEquals.key,
+        value: valueId.key
       }, {
-        column: columnEmail(false),
-        operator: operatorContains,
-        value: valueEmail
+        column: columnEmail(false).name,
+        operator: operatorContains.key,
+        value: valueEmail.key
       }]
     }
   })
@@ -69,13 +92,45 @@ const factoryWithOptGroups = () => {
         columnPrice()
       ],
       'active-filters': [{
-        column: columnId(),
-        operator: operatorEquals,
-        value: valueId
+        column: columnId().name,
+        operator: operatorEquals.key,
+        value: valueId.key
       }, {
-        column: columnEmail(),
-        operator: operatorContains,
-        value: valueEmail
+        column: columnEmail().name,
+        operator: operatorContains.key,
+        value: valueEmail.key
+      }],
+      optGroups: [
+        {value: 'user', label: 'User'},
+        {value: 'item', label: 'Purchased Item'}
+      ]
+    }
+  })
+}
+
+const factoryWithIsOneOf = () => {
+  return mount(VueFilterControl, {
+    propsData: {
+      columns: [
+        columnId(),
+        columnEmail(),
+        columnPrice(),
+        columnFavoriteThings()
+      ],
+      'active-filters': [{
+        column: columnId().name,
+        operator: operatorEquals.key,
+        value: valueId.key
+      }, {
+        column: columnEmail().name,
+        operator: operatorContains.key,
+        value: valueEmail.key
+      }, {
+        column: columnFavoriteThings().name,
+        operator: operatorIsOneOf.key,
+        value: valueFavoriteThings.map((item) => {
+          return item.key
+        })
       }],
       optGroups: [
         {value: 'user', label: 'User'},
@@ -120,12 +175,27 @@ describe('VueFilterControl', () => {
 
     let filterChangedEvent = wrapper.emitted()['filter-changed']
     expect(filterChangedEvent).toBeTruthy()
-    expect(filterChangedEvent[0][0].length).toEqual(1)
+    expect(filterChangedEvent[0][0].length).toBe(1)
     expect(filterChangedEvent[0][0]).toEqual([{
-      column: columnEmail(false),
-      operator: operatorContains,
-      value: valueEmail
+      column: columnEmail(false).name,
+      operator: operatorContains.key,
+      value: valueEmail.key
     }])
+  })
+
+  it('should emit filterChanged if a multiValue choice activeFilter is deleted', async () => {
+    let wrapper = factoryWithIsOneOf()
+
+    // Delete the multiValue choice active filter
+    wrapper.find('button.filter-remove-things').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    let filterChangedEvent = wrapper.emitted()['filter-changed']
+    expect(filterChangedEvent).toBeTruthy()
+    expect(filterChangedEvent[0][0].length).toBe(2)
+    expect(filterChangedEvent[0][0][0].column).toBe(columnId().name)
+    expect(filterChangedEvent[0][0][1].column).toBe(columnEmail().name)
+    expect(wrapper.vm.$props.activeFilters.length).toBe(2)
   })
 
   it('can add a new filter which should emit filterChanged', async () => {
@@ -161,10 +231,10 @@ describe('VueFilterControl', () => {
     await wrapper.vm.$nextTick()
     let filterChangedEvent = wrapper.emitted()['filter-changed']
     expect(filterChangedEvent).toBeTruthy()
-    expect(filterChangedEvent[0][0].length).toEqual(3)
-    expect(filterChangedEvent[0][0][2].column).toEqual(columnPrice(false))
-    expect(filterChangedEvent[0][0][2].operator).toEqual(operatorEquals)
-    expect(filterChangedEvent[0][0][2].value).toEqual(valueId)
+    expect(filterChangedEvent[0][0].length).toBe(3)
+    expect(filterChangedEvent[0][0][2].column).toBe(columnPrice(false).name)
+    expect(filterChangedEvent[0][0][2].operator).toBe(operatorEquals.key)
+    expect(filterChangedEvent[0][0][2].value).toBe(valueId.key)
   })
 
   it('can add a new filter using optgroups which should emit filterChanged', async () => {
@@ -200,10 +270,16 @@ describe('VueFilterControl', () => {
     await wrapper.vm.$nextTick()
     let filterChangedEvent = wrapper.emitted()['filter-changed']
     expect(filterChangedEvent).toBeTruthy()
-    expect(filterChangedEvent[0][0].length).toEqual(3)
-    expect(filterChangedEvent[0][0][2].column).toEqual(columnPrice())
-    expect(filterChangedEvent[0][0][2].operator).toEqual(operatorEquals)
-    expect(filterChangedEvent[0][0][2].value).toEqual(valueId)
+    expect(filterChangedEvent[0][0].length).toBe(3)
+    expect(filterChangedEvent[0][0][2].column).toBe(columnPrice().name)
+    expect(filterChangedEvent[0][0][2].operator).toBe(operatorEquals.key)
+    expect(filterChangedEvent[0][0][2].value).toBe(valueId.key)
   })
 
+  it('displays translations for the operators', async () => {
+    let wrapper = factoryWithIsOneOf()
+    const things = wrapper.find('.filter-edit-' + columnFavoriteThings().name).text()
+    expect(things).toContain('is one of')
+    expect(things).toContain('Thing 1, Thing 3, Thing 6')
+  })
 })

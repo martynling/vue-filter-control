@@ -1,13 +1,13 @@
 <template>
     <li class="filter-box">
         <span id="sr-list-description" class="screen-reader-only">{{ filterText }}</span>
-        <button class="filter-text"
+        <button :class=buttonEditClass
            v-on:click="editFilter(filter)"
            :aria-label=editFilterText
         >
             {{ filterText }}
         </button>
-        <button class="filter-remove"
+        <button :class=buttonRemoveClass
                 v-on:click="removeFilter(filter)"
                 :aria-label=removeFilterText>
             <span class="glyphicon glyphicon-remove"></span>
@@ -24,6 +24,12 @@ export default {
     }
   },
   computed: {
+    buttonEditClass () {
+      return `filter-text filter-edit-${this.filter.column.name}`
+    },
+    buttonRemoveClass () {
+      return `filter-remove filter-remove-${this.filter.column.name}`
+    },
     filterText () {
       return `${this.filter.column.displayName} ${this.filter.operator.displayText} ${this.getFilterValueDisplayText(this.filter.value)}`
     },
@@ -99,6 +105,10 @@ export default {
         border: none;
         border-left: 1px solid rgba(255, 255, 255, 0.3);
         cursor: pointer;
+    }
+
+    .filter-box > .filter-remove .glyphicon {
+        top: 2px;
     }
 
     .filter-box > .filter-remove:hover {

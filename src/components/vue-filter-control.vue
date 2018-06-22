@@ -2,135 +2,174 @@
   <div class="vue-filter-control">
     <div class="filter-display">
       <p>{{ getText('filter_label') }}</p>
-      <ul class="active-filters">
-        <vue-filter-list-item v-for="(activeFilter) in activeFilters"
+      <ul class="active-filters" role="alert">
+        <vue-filter-list-item v-for="(activeFilter) in populatedActiveFilters"
                               v-bind:key="activeFilter.id"
                               v-bind:filter=activeFilter
                               v-on:filter-removed="removeFilter"
                               v-on:filter-edited="editFilter"
         ></vue-filter-list-item>
       </ul>
-      <p><a class="add-filter clickable"
-            v-show="!newFilter"
+      <button class="add-filter"
+            v-show="!showNewFilter"
             v-on:click="addNewFilter"
       >
         <span class="glyphicon glyphicon-plus-sign"
               aria-hidden="true"
         ></span>
         {{ getText('add_filter') }}
-      </a></p>
+      </button>
     </div>
-    <div v-if="newFilter"
-         class="add-new-filter form-inline">
-      <div class="form-group">
-        <label class="sr-only">{{ getText('column') }}</label>
-        <select v-if="!hasOptGroups"
-                v-on:change="columnSelected"
-                class="form-control select-column"
-                v-model="columnName"
-        >
-          <option value="">
-            {{ getText('select_column') }}
-          </option>
-          <option v-for="column in filterableColumns"
-                  v-bind:key="column.name"
-                  v-bind:value="column.name"
+    <div v-if="showNewFilter"
+         class="add-new-filter form-inline"
+    >
+      <form v-on:submit.prevent>
+        <div class="form-group" id="select-column">
+          <label v-if="!hasOptGroups" class="screen-reader-only" for="select-column-simple">{{ getText('select_column') }}</label>
+          <select v-if="!hasOptGroups"
+                  v-on:change="columnSelected"
+                  class="form-control select-column"
+                  v-model="columnName"
+                  id="select-column-simple"
+                  ref="selectColumn"
           >
-            {{ column.displayName }}
-          </option>
-        </select>
-        <select v-if="hasOptGroups"
-                v-on:change="columnSelected"
-                class="form-control select-column"
-                v-model="columnName"
-        >
-          <option value="">
-            {{ getText('select_column') }}
-          </option>
-          <optgroup v-for="group in optGroups"
-                    v-bind:key="group.value"
-                    v-bind:label="group.label"
-          >
-            <option v-for="column in getFilterableOptGroupColumns(group)"
-                    v-bind:key="column.id"
+            <option value="">
+              {{ getText('select_column_blank') }}
+            </option>
+            <option v-for="column in filterableColumns"
+                    v-bind:key="column.name"
                     v-bind:value="column.name"
             >
               {{ column.displayName }}
             </option>
-          </optgroup>
-        </select>
-      </div>
-      <div class="form-group"
-           v-show="showOperatorOptions"
-      >
-        <label class="sr-only">{{ getText('operator') }}</label>
-        <select v-on:change="operatorSelected"
-                class="form-control select-operator"
-                v-model="operatorKey"
-        >
-          <option value="">
-            {{ getText('select_operator') }}
-          </option>
-          <option v-for="(value, key) in operatorOptions"
-                  v-bind:key="key"
-                  v-bind:value="key"
+          </select>
+          <label v-if="hasOptGroups" class="screen-reader-only" for="select-column-opt-group">{{ getText('select_column') }}</label>
+          <select v-if="hasOptGroups"
+                  v-on:change="columnSelected"
+                  class="form-control select-column"
+                  v-model="columnName"
+                  id="select-column-opt-group"
+                  ref="selectColumn"
           >
-            {{ value.displayText }}
-          </option>
-        </select>
-      </div>
-      <div class="form-group"
-           v-if="showFilterValueInput"
-      >
-        <label class="sr-only">{{ getText('filter_by') }}</label>
-        <input v-if="freetextQuery"
-               type="text"
-               class="form-control input-value"
-               v-model="filterValue"
-               v-on:keyup.enter="setNewFilter"
-        />
-        <selectize v-if="selectQuery"
-                v-model="filterValue"
-                :settings="selectizeSettings"
-                class="form-control"
-                v-on:keyup.enter="setNewFilter"
-        >
-          <option value="">{{ getText('select_value') }}</option>
-          <option v-for="option in filterValueOptions"
-                  v-bind:key="option.key"
-                  v-bind:value="option.key"
-          >
-            {{ option.value }}
-          </option>
-        </selectize>
-        <div v-if="dateQuery">
-          <input v-if="supportsHtml5Date"
-                 type="date" class="form-control"
-                 v-model="filterValue"
-                 v-on:keyup.enter="setNewFilter"
-          />
-          <input v-else
-                 type="text"
-                 class="form-control"
-                 v-model="filterValue"
-                 placeholder="YYYY-MM-DD"
-                 v-on:keyup.enter="setNewFilter"
-          />
+            <option value="">
+              {{ getText('select_column_blank') }}
+            </option>
+            <optgroup v-for="group in optGroups"
+                      v-bind:key="group.value"
+                      v-bind:label="group.label"
+            >
+              <option v-for="column in getFilterableOptGroupColumns(group)"
+                      v-bind:key="column.id"
+                      v-bind:value="column.name"
+              >
+                {{ column.displayName }}
+              </option>
+            </optgroup>
+          </select>
         </div>
-      </div>
-      <div class="form-group">
-        <button :disabled="!showFilterValueInput"
-                v-on:click="setNewFilter"
-                class="btn btn-sm btn-primary set-filter"
+        <div class="form-group"
+             v-show="showOperatorOptions"
         >
-          {{ getText('set_filter') }}
-        </button>
-        <button v-on:click="cancelNewFilter"
-                class="btn btn-sm btn-default cancel-filter"
+          <label class="screen-reader-only" for="select-operator">{{ getText('select_operator') }}</label>
+          <select v-on:change="operatorSelected"
+                  class="form-control select-operator"
+                  v-model="operatorKey"
+                  id="select-operator"
+                  ref="selectOperator"
+          >
+            <option value="">
+              {{ getText('select_operator_blank') }}
+            </option>
+            <option v-for="(value, key) in operatorOptions"
+                    v-bind:key="key"
+                    v-bind:value="key"
+            >
+              {{ value.displayText }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group"
+             v-if="showFilterValueInput"
         >
-          {{ getText('cancel') }}
-        </button>
-      </div>
+          <label class="screen-reader-only" for="value-text">{{ getText('filter_by') }}</label>
+          <input v-if="freetextQuery"
+              type="text"
+              class="form-control input-value"
+              v-model="filterValue"
+              v-on:keyup.enter="setNewFilter"
+              id="value-text"
+              ref="inputValue"
+          />
+          <label v-if="selectQuery" class="screen-reader-only" for="value-select">{{ getText('filter_by') }}</label>
+          <select v-if="selectQuery"
+                     v-model="filterValue"
+                     :settings="selectizeSettings"
+                     class="form-control"
+                     v-on:keyup.enter="setNewFilter"
+                     id="value-select"
+                     ref="inputValue"
+          >
+            <option value="">{{ getText('select_value_blank') }}</option>
+            <option v-for="option in filterValueOptions"
+                    v-bind:key="option.key"
+                    v-bind:value="option.key"
+            >
+              {{ option.value }}
+            </option>
+          </select>
+          <label v-if="multiSelectQuery" class="screen-reader-only" for="value-select-multi">{{ getText('filter_by') }}</label>
+          <selectize v-if="multiSelectQuery"
+              v-model="filterValue"
+              :settings="selectizeSettings"
+              class="form-control"
+              v-on:keyup.enter="setNewFilter"
+              id="value-select-multi"
+              ref="inputValue"
+          >
+            <option value="">{{ getText('select_value_blank') }}</option>
+            <option v-for="option in filterValueOptions"
+                    v-bind:key="option.key"
+                    v-bind:value="option.key"
+            >
+              {{ option.value }}
+            </option>
+          </selectize>
+          <div v-if="dateQuery">
+            <label v-if="supportsHtml5Date" class="screen-reader-only" for="value-date">{{ getText('filter_by') }}</label>
+            <input v-if="supportsHtml5Date"
+                   type="date" class="form-control"
+                   v-model="filterValue"
+                   v-on:keyup.enter="setNewFilter"
+                   id="value-date"
+                   ref="inputValue"
+            />
+            <div v-else>
+              <label class="screen-reader-only" for="value-date-basic">{{ getText('filter_by') }}</label>
+              <input type="text"
+                     class="form-control"
+                     v-model="filterValue"
+                     placeholder="YYYY-MM-DD"
+                     v-on:keyup.enter="setNewFilter"
+                     id="value-date-basic"
+                     ref="inputValue"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button :disabled="!showFilterValueInput"
+                  v-on:click="setNewFilter"
+                  class="btn btn-sm btn-primary set-filter"
+          >
+            {{ getText('set_filter') }}
+          </button>
+          <button v-on:click="cancelNewFilter"
+                  class="btn btn-sm btn-default cancel-filter"
+          >
+            {{ getText('cancel') }}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -173,6 +212,7 @@ export default {
       columnName: '',
       freetextQuery: false,
       selectQuery: false,
+      multiSelectQuery: false,
       dateQuery: false,
       operator: null,
       operatorKey: '',
@@ -190,9 +230,13 @@ export default {
           add_filter: 'Add Filter',
           column: 'Column',
           operator: 'Operator',
-          select_column: '-- Select --',
-          select_operator: '-- Select --',
-          select_value: '-- Select --',
+          select_column: 'Choose Filter Column',
+          select_column_blank: '-- Select --',
+          select_operator: 'Choose Filter Operator',
+          select_operator_blank: '-- Select --',
+          select_value: 'Choose Filter Value',
+          select_values: 'Choose Filter Values',
+          select_value_blank: '-- Select --',
           filter_by: 'Filter by',
           set_filter: 'Set Filter',
           cancel: 'Cancel',
@@ -210,16 +254,20 @@ export default {
           after_or_on: 'after or on',
           is_one_of: 'is one of',
           column_missing: '-- Column Missing --',
-          operator_missing: '-- Operator Missing --'
+          operator_missing: '-- Operator Missing --',
+          is: 'is',
+          is_not: 'is not'
         },
         fr: {
           filter_label: 'Filtre par:',
           add_filter: 'Ajouter un filtre',
           column: 'Colonne',
           operator: 'Opérateur',
-          select_column: '-- Sélectionner --',
-          select_operator: '-- Sélectionner --',
-          select_value: '-- Sélectionner --',
+          select_column: 'Sélectionner Colonne',
+          select_column_blank: '-- Sélectionner --',
+          select_operator: 'Sélectionner Opérateur',
+          select_operator_blank: '-- Sélectionner --',
+          select_value_blank: '-- Sélectionner --',
           filter_by: 'Filtrer par',
           set_filter: 'Créer un filtre',
           cancel: 'Annuler',
@@ -237,16 +285,18 @@ export default {
           after_or_on: 'après ou au',
           is_one_of: 'est l\'un de',
           column_missing: '-- Colonne absente --',
-          operator_missing: '-- Opérateur absent --'
+          operator_missing: '-- Opérateur absent --',
+          is: 'est',
+          is_not: 'n\'est pas'
         },
         pt: {
           filter_label: 'Filtro por:',
           add_filter: 'Adicionar Filtro',
           column: 'Coluna',
           operator: 'Operador',
-          select_column: '-- Seleccionar --',
-          select_operator: '-- Seleccionar --',
-          select_value: '-- Seleccionar --',
+          select_column_blank: '-- Seleccionar --',
+          select_operator_blank: '-- Seleccionar --',
+          select_value_blank: '-- Seleccionar --',
           filter_by: 'Filtrar por',
           set_filter: 'Definir Filtro',
           cancel: 'Cancelar',
@@ -264,7 +314,9 @@ export default {
           after_or_on: 'depois ou em',
           is_one_of: 'é um de',
           column_missing: '-- Coluna em Falta --',
-          operator_missing: '-- Operador em Falta --'
+          operator_missing: '-- Operador em Falta --',
+          is: 'é',
+          is_not: 'não é'
         }
       }
     }
@@ -289,6 +341,23 @@ export default {
       })
     },
 
+    populatedActiveFilters () {
+      return this.activeFilters.map(function (item) {
+        let column = this.columns.find(function (col) {
+          return col.name === item.column
+        })
+        return {
+          column: column,
+          operator: this.getOperatorFromColumnAndKey(column, item.operator),
+          value: this.getFilterValueObject(column, item.value)
+        }
+      }, this)
+    },
+
+    showNewFilter () {
+      return this.newFilter || this.activeFilters.length === 0
+    },
+
     supportsHtml5Date () {
       if (typeof Modernizr === 'undefined') {
         console.log('Vue-Filter-Control warning: Modernizr is required to switch to alternative input for browsers not supporting date input.')
@@ -303,6 +372,7 @@ export default {
       this.freetextQuery = false
       this.dateQuery = false
       this.selectQuery = false
+      this.multiSelectQuery = false
 
       if (this.column.maxItems) {
         if (this.operator && this.operator.multiSelect) this.selectizeSettings.maxItems = this.column.maxItems
@@ -323,7 +393,12 @@ export default {
           this.dateQuery = true
           break
         case 'choice':
-          this.selectQuery = true
+          if (this.column && this.column.maxItems > 1 && this.operator && this.operator.multiSelect) {
+            this.selectizeSettings.maxItems = this.column.maxItems
+            this.multiSelectQuery = true
+          } else {
+            this.selectQuery = true
+          }
           break
       }
       return true
@@ -331,6 +406,7 @@ export default {
 
     addNewFilter () {
       this.newFilter = true
+      this.$nextTick(() => this.$refs.selectColumn.focus())
     },
 
     cancelNewFilter () {
@@ -352,8 +428,10 @@ export default {
         alert('Column configuration error')
       }
       this.showOperatorOptions = true
+      this.$nextTick(() => this.$refs.selectOperator.focus())
     },
 
+    // `filter` is passed  from vue-filter-list-item and is from populatedActiveFilters
     editFilter (filter) {
       this.editingFilter = filter
       this.newFilter = true
@@ -366,13 +444,7 @@ export default {
       this.$nextTick(function () {
         // this code is in next tick in case the filter selection is a dropdown list whose contents are dependent
         // on the operator selected
-        if (Array.isArray(filter.value)) {
-          this.filterValue = filter.value.map((item) => {
-            return item.key
-          })
-        } else {
-          this.filterValue = filter.value.key
-        }
+        this.filterValue = this.getFilterValueObjectKeys(filter.value)
       })
     },
 
@@ -383,18 +455,26 @@ export default {
     },
 
     getFilterValueObject (column, filterValue) {
-      let values = null
-      if (column.maxItems === 1) {
-        values = this.getSelectedOptionFromColumnAndKey(column, filterValue)
-        if (!values) {
-          values = { key: filterValue, value: filterValue }
-        }
-      } else { // array of keys
-        values = filterValue.map(function (item) {
+      if (Array.isArray(filterValue)) { // array of keys
+        return filterValue.map(function (item) {
           return this.getSelectedOptionFromColumnAndKey(column, item)
         }, this)
+      } else {
+        let value = this.getSelectedOptionFromColumnAndKey(column, filterValue)
+        if (!value) {
+          value = { key: filterValue, value: filterValue }
+        }
+        return value
       }
-      return values
+    },
+
+    getFilterValueObjectKeys (filterValueObject) {
+      if (Array.isArray(filterValueObject)) {
+        return filterValueObject.map((item) => {
+          return item.key
+        })
+      }
+      return filterValueObject.key
     },
 
     getOperatorFromColumnAndKey (column, key) {
@@ -407,13 +487,18 @@ export default {
       if (!operators || !operators.length) return {}
 
       // Remove any operators that are not relevant to the column
-      let relevantOperators = operators.filter(function (operator) {
+      const relevantOperators = operators.filter(function (operator) {
         // multiSelect operators are not relevant if the column only allows one item to be selected
         return !(column.dataType === 'choice' && operator.multiSelect && column.maxItems === 1)
       })
 
+      const translatedOperators = relevantOperators.map(function (item) {
+        item.displayText = this.getText(item.displayText)
+        return item
+      }, this)
+
       // Reformat the array into key => item structure
-      return relevantOperators.reduce((obj, item) => {
+      return translatedOperators.reduce((obj, item) => {
         obj[item.key] = item
         return obj
       }, {})
@@ -428,6 +513,14 @@ export default {
       return null
     },
 
+    areFilterValuesEqual (filterValue1, filterValue2) {
+      return (
+        Array.isArray(filterValue1)
+          ? (filterValue2.length === filterValue1.length && filterValue2.every((v, i) => v === filterValue1[i]))
+          : filterValue2 === filterValue1
+      )
+    },
+
     operatorSelected (resetValue = true) {
       this.operator = this.getOperatorFromColumnAndKey(this.column, this.operatorKey)
       this.showFilterValueInput = false // Force a reload of input based on operator
@@ -436,13 +529,21 @@ export default {
       this.$nextTick(function () {
         // Allow a tick for the input to be removed and then re-create it
         this.showFilterValueInput = true
+        this.$nextTick(() => this.$refs.inputValue.focus())
       })
     },
 
-    removeFilter (activeFilter) {
-      let index = this.activeFilters.indexOf(activeFilter)
-      this.activeFilters.splice(index, 1)
-      this.$emit('filter-changed', this.activeFilters)
+    removeFilter (populatedActiveFilter) {
+      let index = this.activeFilters.findIndex(function (item) {
+        let filterValue = this.getFilterValueObjectKeys(populatedActiveFilter.value)
+        return item.column === populatedActiveFilter.column.name &&
+          item.operator === populatedActiveFilter.operator.key &&
+          this.areFilterValuesEqual(filterValue, item.value)
+      }, this)
+      if (index !== -1) {
+        this.activeFilters.splice(index, 1)
+        this.$emit('filter-changed', this.activeFilters)
+      }
     },
 
     resetNewFilterData () {
@@ -459,9 +560,9 @@ export default {
 
     setNewFilter () {
       let newFilter = {
-        column: this.column,
-        operator: this.operator,
-        value: this.getFilterValueObject(this.column, this.filterValue)
+        column: this.column.name,
+        operator: this.operator.key,
+        value: this.getFilterValueObjectKeys(this.getFilterValueObject(this.column, this.filterValue))
       }
 
       if (this.editingFilter === null) {
@@ -476,6 +577,9 @@ export default {
 
     getText (id) {
       if (!this.locales[this.locale][id]) {
+        if (!this.locales['en'][id]) {
+          return id
+        }
         return this.locales['en'][id]
       }
       return this.locales[this.locale][id]
@@ -485,6 +589,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .screen-reader-only {
+    position: absolute;
+    height: 1px;
+    width: 1px;
+    clip: rect(1px,1px,1px,1px);
+    clip-path: polygon(0px 0px, 0px 0px, 0px 0px);
+    -webkit-clip-path: polygon(0px 0px, 0px 0px, 0px 0px);
+    overflow: hidden !important;
+  }
+
   .vue-filter-control {
     font-size: 14px;
   }
@@ -496,20 +610,35 @@ export default {
   .vue-filter-control .active-filters {
     float: left;
     margin-left: 4px;
-    margin-top: -4px;
     padding-left: 0;
   }
 
-  .vue-filter-control .filter-display .add-filter {
-    margin-left: 4px;
+  .add-filter {
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+    position: relative;
+    border-radius: 3px;
+    background: #337ab7;
+    margin-right: 4px;
+    padding: 0 8px 0;
+    border: none;
   }
 
-  .vue-filter-control .add-new-filter {
+  .add-filter:hover {
+    background: #000;
+  }
+
+  .add-filter .glyphicon {
+    top: 3px;
+  }
+
+  .add-new-filter {
     width: 100%;
     clear: left;
   }
 
-  .vue-filter-control .selectize-control {
+  .selectize-control {
     min-width: 200px;
     margin-top: 7px!important;
   }

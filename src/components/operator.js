@@ -23,11 +23,11 @@ class OperatorDefinition {
 
 const DataTypeOperators = {
   boolean: [
-    new OperatorDefinition({ key: '=' }),
-    new OperatorDefinition({ key: '!=' })
+    new OperatorDefinition({ key: '=', displayText: 'is' }),
+    new OperatorDefinition({ key: '!=', displayText: 'is_not' })
   ],
   string: [
-    new OperatorDefinition({ key: '=' }),
+    new OperatorDefinition({ key: '=', displayText: 'is' }),
     new OperatorDefinition({ key: 'begins', displayText: 'begins_with' }),
     new OperatorDefinition({ key: 'contains' })
   ],
@@ -53,7 +53,7 @@ const DataTypeOperators = {
     new OperatorDefinition({ key: '>=', displayText: 'after_or_on' })
   ],
   choice: [
-    new OperatorDefinition({ key: '=', multiSelect: false }),
+    new OperatorDefinition({ key: '=', displayText: 'is', multiSelect: false }),
     new OperatorDefinition({ key: 'in', displayText: 'is_one_of', multiSelect: true })
   ]
 }

@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
+  <div id="app" role="main">
+    <img src="./assets/logo.png" alt="Vue Logo">
     <h1>Vue Filter Control Dev</h1>
     <vue-filter-control
             @filter-changed="refreshData"

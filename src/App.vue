@@ -82,6 +82,20 @@ export default {
           hidden: true,
           optGroup: 'user'
         }, {
+          name: 'thing_id',
+          displayName: 'Things',
+          dataType: 'choice',
+          options: [
+            {key: 'Thing1', value: 'Thing1'},
+            {key: 'Thing2', value: 'Thing2'},
+            {key: 'Thing3', value: 'Thing3'},
+            {key: 'Thing4', value: 'Thing4'},
+            {key: 'Thing5', value: 'Thing5'},
+          ],
+          maxItems: 3,
+          hidden: true,
+          optGroup: 'user'
+        }, {
           name: 'roleTitle',
           displayName: 'Role',
           dataType: 'string',

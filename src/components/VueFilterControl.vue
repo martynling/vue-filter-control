@@ -407,7 +407,7 @@
       getFilterValueDisplayText (columnName, filterValue) {
         let column = this.getColumn(columnName)
         let option = null
-        if (!column.hasOwnProperty('maxItems') || column.maxItems === 1) {
+        if (!column.hasOwnProperty('maxItems') || column.maxItems === 1 || !Array.isArray(filterValue)) {
           option = this.getSelectedOptionFromColumnAndKey(column, filterValue)
         } else { // array of keys
           let optValues = []
